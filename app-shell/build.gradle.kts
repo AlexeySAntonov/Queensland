@@ -10,7 +10,7 @@ plugins {
 
 kotlin {
     android {
-        namespace = "com.alan.queensland.app.compose"
+        namespace = "com.alan.queensland.app.shell"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         compilerOptions {
