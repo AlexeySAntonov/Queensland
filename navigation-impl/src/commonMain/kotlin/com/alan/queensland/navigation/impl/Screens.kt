@@ -1,7 +1,8 @@
-package com.alan.queensland.navigation.api
+package com.alan.queensland.navigation.impl
 
 enum class Screens(val route: String) {
     Home("home"),
+    GameConfiguration("game_configuration"),
     Game("game"),
     Results("results"),
 }

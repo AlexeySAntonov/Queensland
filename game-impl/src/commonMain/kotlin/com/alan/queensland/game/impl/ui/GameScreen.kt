@@ -21,7 +21,7 @@ import com.alan.queensland.core.ui.base.compose.themes.Paddings
 fun GameScreen(
     viewModel: GameViewModel,
 ) {
-    val hasActiveGame by viewModel.hasActiveGame.collectAsState()
+    val activeGameState by viewModel.activeGameState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -51,7 +51,9 @@ fun GameScreen(
                 modifier = Modifier.padding(top = Paddings.half),
             )
             Text(
-                text = if (hasActiveGame) "Game in progress" else "No active game",
+                text = activeGameState?.let { state ->
+                    "${state.boardSize} x ${state.boardSize} board"
+                } ?: "No active game",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = Paddings.one),
             )

@@ -1,14 +1,10 @@
 package com.alan.queensland.game.api
 
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class ObserveHasActiveGameUseCase(
+class ObserveActiveGameStateUseCase(
     private val repository: GameRepository,
 ) {
     operator fun invoke() = repository.observeActiveGameState()
-        .map { it != null }
-        .distinctUntilChanged()
 }

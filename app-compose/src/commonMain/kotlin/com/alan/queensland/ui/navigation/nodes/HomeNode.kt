@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.alan.queensland.home.impl.di.HomeComponent
 import com.alan.queensland.home.impl.ui.HomeScreen
-import com.alan.queensland.navigation.api.Screens
+import com.alan.queensland.navigation.impl.Screens
 
 fun NavGraphBuilder.homeNode(
     componentCreator: () -> HomeComponent,

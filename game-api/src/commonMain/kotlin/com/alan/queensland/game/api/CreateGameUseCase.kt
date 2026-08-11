@@ -4,12 +4,12 @@ import com.alan.queensland.navigation.api.Router
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class StartNewGameUseCase(
+class CreateGameUseCase(
     private val gameRepository: GameRepository,
     private val router: Router,
 ) {
-    operator fun invoke() {
-        gameRepository.clear()
-        router.openGameConfiguration()
+    operator fun invoke(boardSize: Int) {
+        gameRepository.updateActiveGameState { ActiveGameState(boardSize = boardSize) }
+        router.openGame()
     }
 }

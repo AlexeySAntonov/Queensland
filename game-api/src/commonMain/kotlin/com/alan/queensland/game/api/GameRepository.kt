@@ -4,7 +4,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface GameRepository {
 
-    fun observeHasActiveGame(): Flow<Boolean>
+    fun observeActiveGameState(): Flow<ActiveGameState?>
 
-    fun clearCache()
+    fun updateActiveGameState(transform: ActiveGameState?.() -> ActiveGameState?)
+
+    fun clear()
 }

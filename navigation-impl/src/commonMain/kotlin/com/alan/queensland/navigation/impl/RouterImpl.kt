@@ -13,6 +13,10 @@ class RouterImpl : Router {
 
     override val events: Flow<NavigationEvent> = eventsChannel.receiveAsFlow()
 
+    override fun openGameConfiguration() {
+        eventsChannel.trySend(NavigationEvent.OpenGameConfiguration)
+    }
+
     override fun openGame() {
         eventsChannel.trySend(NavigationEvent.OpenGame)
     }

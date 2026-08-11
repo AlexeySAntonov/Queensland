@@ -2,7 +2,8 @@ package com.alan.queensland.game.impl.ui
 
 import androidx.lifecycle.viewModelScope
 import com.alan.queensland.core.ui.base.lifecycle.BaseViewModel
-import com.alan.queensland.game.api.ObserveHasActiveGameUseCase
+import com.alan.queensland.game.api.ActiveGameState
+import com.alan.queensland.game.api.ObserveActiveGameStateUseCase
 import com.alan.queensland.game.impl.di.GameComponentHolder
 import com.alan.queensland.navigation.api.Router
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,15 +13,15 @@ import me.tatarka.inject.annotations.Inject
 
 @Inject
 class GameViewModel(
-    observeHasActiveGameUseCase: ObserveHasActiveGameUseCase,
+    observeActiveGameStateUseCase: ObserveActiveGameStateUseCase,
     private val router: Router,
 ) : BaseViewModel() {
 
-    val hasActiveGame: StateFlow<Boolean> = observeHasActiveGameUseCase()
+    val activeGameState: StateFlow<ActiveGameState?> = observeActiveGameStateUseCase()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-            initialValue = false,
+            initialValue = null,
         )
 
     override fun onCleared() {

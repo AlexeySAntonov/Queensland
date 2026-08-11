@@ -3,6 +3,7 @@ package com.alan.queensland.game.impl.di
 import com.alan.queensland.core.di.FeatureScope
 import com.alan.queensland.game.api.GameRepository
 import com.alan.queensland.game.impl.ui.GameViewModel
+import com.alan.queensland.game.impl.ui.configuration.GameConfigurationViewModel
 import com.alan.queensland.game.impl.ui.results.ResultsViewModel
 import com.alan.queensland.navigation.api.Router
 import me.tatarka.inject.annotations.Component
@@ -15,6 +16,8 @@ abstract class GameComponent(
     @get:Provides val gameRepository: GameRepository,
     @get:Provides val router: Router,
 ) {
+
+    abstract val gameConfigurationViewModel: GameConfigurationViewModel
     abstract val gameViewModel: GameViewModel
     abstract val resultsViewModel: ResultsViewModel
 

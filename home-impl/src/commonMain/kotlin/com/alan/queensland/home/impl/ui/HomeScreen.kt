@@ -6,15 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.alan.queensland.core.ui.base.compose.components.AppButton
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 
 @Composable
@@ -41,26 +40,25 @@ fun HomeScreen(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(Paddings.half),
         ) {
-            Button(
+            AppButton(
+                text = "New game",
                 onClick = viewModel::onNewGameClick,
                 modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text("New game")
-            }
+            )
             if (hasActiveGame) {
-                OutlinedButton(
+                AppButton(
+                    text = "Resume game",
                     onClick = viewModel::onResumeGameClick,
                     modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text("Resume game")
-                }
+                    isOutlined = true,
+                )
             }
-            OutlinedButton(
+            AppButton(
+                text = "See results",
                 onClick = viewModel::onSeeResultsClick,
                 modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text("See results")
-            }
+                isOutlined = true,
+            )
         }
     }
 }
