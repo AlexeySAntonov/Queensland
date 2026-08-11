@@ -16,11 +16,11 @@ import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alan.queensland.core.ui.base.compose.components.AppButton
 import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
@@ -31,7 +31,7 @@ import com.alan.queensland.core.ui.base.util.GameBoardSize
 fun GameConfigurationScreen(
     viewModel: GameConfigurationViewModel,
 ) {
-    val boardSize by viewModel.boardSize.collectAsState()
+    val boardSize by viewModel.boardSize.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {

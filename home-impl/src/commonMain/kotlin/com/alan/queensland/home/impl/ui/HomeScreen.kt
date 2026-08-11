@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alan.queensland.core.ui.base.compose.components.AppButton
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 
@@ -20,7 +20,7 @@ import com.alan.queensland.core.ui.base.compose.themes.Paddings
 fun HomeScreen(
     viewModel: HomeViewModel,
 ) {
-    val hasActiveGame by viewModel.hasActiveGame.collectAsState()
+    val hasActiveGame by viewModel.hasActiveGame.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier

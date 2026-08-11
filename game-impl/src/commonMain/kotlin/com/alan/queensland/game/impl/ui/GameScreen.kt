@@ -19,13 +19,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
@@ -36,7 +36,7 @@ import com.alan.queensland.game.api.BoardPosition
 fun GameScreen(
     viewModel: GameViewModel,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
