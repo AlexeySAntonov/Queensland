@@ -1,8 +1,8 @@
 package com.alan.queensland.game.impl.ui.configuration
 
 import com.alan.queensland.core.ui.base.lifecycle.BaseViewModel
-import com.alan.queensland.game.api.CreateGameUseCase
 import com.alan.queensland.core.ui.base.util.GameBoardSize
+import com.alan.queensland.game.impl.business.CreateGameUseCase
 import com.alan.queensland.navigation.api.Router
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

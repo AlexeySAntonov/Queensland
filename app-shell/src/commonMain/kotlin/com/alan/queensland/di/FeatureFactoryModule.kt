@@ -1,6 +1,7 @@
 package com.alan.queensland.di
 
 import com.alan.queensland.core.di.Singleton
+import com.alan.queensland.core.utils.flow.CoroutineDispatchers
 import com.alan.queensland.game.api.GameRepository
 import com.alan.queensland.game.impl.di.GameComponent
 import com.alan.queensland.home.impl.di.HomeComponent
@@ -26,10 +27,12 @@ interface FeatureFactoryModule {
     fun bindGameDependencies(
         gameRepository: GameRepository,
         router: Router,
+        coroutineDispatchers: CoroutineDispatchers,
     ): GameComponent.Dependencies {
         return object : GameComponent.Dependencies {
             override fun gameRepository(): GameRepository = gameRepository
             override fun router(): Router = router
+            override fun coroutineDispatchers(): CoroutineDispatchers = coroutineDispatchers
         }
     }
 }

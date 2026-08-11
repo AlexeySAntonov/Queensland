@@ -1,5 +1,6 @@
-package com.alan.queensland.game.api
+package com.alan.queensland.game.impl.business
 
+import com.alan.queensland.game.api.GameRepository
 import me.tatarka.inject.annotations.Inject
 
 @Inject

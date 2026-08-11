@@ -43,6 +43,7 @@ fun GameConfigurationScreen(
             )
         },
     ) { contentPadding ->
+        // NB: landscape requires different layout for proper presentation
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -1,5 +1,7 @@
-package com.alan.queensland.game.api
+package com.alan.queensland.game.impl.business
 
+import com.alan.queensland.game.api.ActiveGameState
+import com.alan.queensland.game.api.GameRepository
 import com.alan.queensland.navigation.api.Router
 import me.tatarka.inject.annotations.Inject
 

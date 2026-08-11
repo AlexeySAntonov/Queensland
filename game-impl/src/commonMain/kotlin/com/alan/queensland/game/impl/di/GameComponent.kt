@@ -1,6 +1,7 @@
 package com.alan.queensland.game.impl.di
 
 import com.alan.queensland.core.di.FeatureScope
+import com.alan.queensland.core.utils.flow.CoroutineDispatchers
 import com.alan.queensland.game.api.GameRepository
 import com.alan.queensland.game.impl.ui.GameViewModel
 import com.alan.queensland.game.impl.ui.configuration.GameConfigurationViewModel
@@ -15,6 +16,7 @@ import me.tatarka.inject.annotations.Provides
 abstract class GameComponent(
     @get:Provides val gameRepository: GameRepository,
     @get:Provides val router: Router,
+    @get:Provides val coroutineDispatchers: CoroutineDispatchers,
 ) {
 
     abstract val gameConfigurationViewModel: GameConfigurationViewModel
@@ -24,6 +26,7 @@ abstract class GameComponent(
     interface Dependencies {
         fun gameRepository(): GameRepository
         fun router(): Router
+        fun coroutineDispatchers(): CoroutineDispatchers
     }
 
     companion object {
@@ -31,6 +34,7 @@ abstract class GameComponent(
             return createKmp(
                 dependencies.gameRepository(),
                 dependencies.router(),
+                dependencies.coroutineDispatchers(),
             )
         }
     }
@@ -40,4 +44,5 @@ abstract class GameComponent(
 expect fun createKmp(
     gameRepository: GameRepository,
     router: Router,
+    coroutineDispatchers: CoroutineDispatchers,
 ): GameComponent

@@ -16,6 +16,7 @@ kotlin {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_17
         }
+        withHostTestBuilder {}.configure {}
         androidResources {
             enable = true
         }
@@ -50,6 +51,13 @@ kotlin {
             implementation(libs.compose.components.resources)
             implementation(libs.navigation.compose)
             implementation(libs.tatarka.inject.runtime)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.core)
+        }
+        getByName("androidHostTest").dependencies {
+            implementation(libs.kotlin.testJunit)
         }
     }
 }
