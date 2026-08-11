@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
+import com.alan.queensland.core.ui.base.model.UiState
 import com.alan.queensland.game.api.BoardPosition
 
 @Composable
@@ -46,47 +48,78 @@ fun GameScreen(
             )
         },
     ) { contentPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding)
                 .padding(horizontal = Paddings.one, vertical = Paddings.half),
-            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val state = uiState
-            if (state == null) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = "No active game",
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
-            } else {
-                QueenReserve(
-                    remainingQueenCount = state.remainingQueenCount,
-                    modifier = Modifier.fillMaxWidth(),
+            GameUiStateContent(
+                uiState = uiState,
+                onCellClick = viewModel::onCellClick,
+            )
+        }
+    }
+}
+
+@Composable
+private fun BoxScope.GameUiStateContent(
+    uiState: UiState<GameUiState>,
+    onCellClick: (row: Int, column: Int) -> Unit,
+) {
+    when (uiState) {
+        UiState.Loading -> LoadingContent()
+        UiState.Error -> ErrorContent()
+        is UiState.Data -> GameContent(
+            state = uiState.value,
+            onCellClick = onCellClick,
+        )
+    }
+}
+
+@Composable
+private fun BoxScope.LoadingContent() {
+    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+}
+
+@Composable
+private fun BoxScope.ErrorContent() {
+    Text(
+        text = "No active game",
+        modifier = Modifier.align(Alignment.Center),
+        style = MaterialTheme.typography.bodyLarge,
+    )
+}
+
+@Composable
+private fun GameContent(
+    state: GameUiState,
+    onCellClick: (row: Int, column: Int) -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        QueenReserve(
+            remainingQueenCount = state.remainingQueenCount,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+            val boardDimension = minOf(maxWidth, maxHeight)
+            AppChessBoard(
+                boardSize = state.boardSize,
+                modifier = Modifier.size(boardDimension),
+                onCellClick = onCellClick,
+            ) { row, column ->
+                QueenCell(
+                    position = BoardPosition(row = row, column = column),
+                    state = state,
                 )
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    contentAlignment = Alignment.TopCenter,
-                ) {
-                    val boardDimension = minOf(maxWidth, maxHeight)
-                    AppChessBoard(
-                        boardSize = state.boardSize,
-                        modifier = Modifier.size(boardDimension),
-                        onCellClick = viewModel::onCellClick,
-                    ) { row, column ->
-                        QueenCell(
-                            position = BoardPosition(row = row, column = column),
-                            state = state,
-                        )
-                    }
-                }
             }
         }
     }
