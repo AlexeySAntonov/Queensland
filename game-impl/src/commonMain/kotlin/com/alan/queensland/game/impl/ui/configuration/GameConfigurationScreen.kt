@@ -65,7 +65,7 @@ fun GameConfigurationScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             AppButton(
-                text = "Continue",
+                text = "Start game",
                 onClick = viewModel::onContinueClick,
                 modifier = Modifier.fillMaxWidth(),
             )

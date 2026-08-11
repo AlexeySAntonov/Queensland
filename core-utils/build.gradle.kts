@@ -21,6 +21,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(project(":core-di"))
+            implementation(libs.kermit)
             api(libs.kotlinx.coroutines.core)
         }
     }
