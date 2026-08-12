@@ -9,9 +9,17 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun AppButton(
@@ -23,10 +31,22 @@ fun AppButton(
     isOutlined: Boolean = false,
 ) {
     val buttonModifier = modifier.requiredHeight(56.dp)
+    val coroutineScope = rememberCoroutineScope()
+    var acceptsClicks by remember { mutableStateOf(true) }
+    val guardedOnClick: () -> Unit = {
+        if (acceptsClicks) {
+            acceptsClicks = false
+            coroutineScope.launch {
+                delay(CLICK_THROTTLE_MILLIS.milliseconds)
+                acceptsClicks = true
+            }
+            onClick()
+        }
+    }
 
     if (isOutlined) {
         OutlinedButton(
-            onClick = onClick,
+            onClick = guardedOnClick,
             modifier = buttonModifier,
             enabled = enabled,
             colors = ButtonDefaults.outlinedButtonColors(contentColor = color),
@@ -39,7 +59,7 @@ fun AppButton(
         }
     } else {
         Button(
-            onClick = onClick,
+            onClick = guardedOnClick,
             modifier = buttonModifier,
             enabled = enabled,
             colors = ButtonDefaults.buttonColors(
@@ -59,3 +79,5 @@ private fun AppButtonText(text: String) {
         style = MaterialTheme.typography.labelLarge,
     )
 }
+
+private const val CLICK_THROTTLE_MILLIS = 300L
