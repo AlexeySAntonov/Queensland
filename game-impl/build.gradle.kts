@@ -33,10 +33,12 @@ kotlin {
             implementation(project(":core-utils"))
             implementation(project(":navigation-api"))
 
+            implementation(libs.compose.animation)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.compose.runtime)
             implementation(libs.compose.ui)
+            implementation(libs.kermit)
             implementation(libs.kotlinx.atomicfu)
             implementation(libs.tatarka.inject.runtime)
         }

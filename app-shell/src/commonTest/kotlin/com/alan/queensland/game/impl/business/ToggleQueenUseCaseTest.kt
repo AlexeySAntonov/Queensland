@@ -2,9 +2,7 @@ package com.alan.queensland.game.impl.business
 
 import com.alan.queensland.game.api.ActiveGameState
 import com.alan.queensland.game.api.BoardPosition
-import com.alan.queensland.game.api.GameRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.alan.queensland.game.test.FakeGameRepository
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -48,24 +46,5 @@ class ToggleQueenUseCaseTest {
         ToggleQueenUseCase(repository)(BoardPosition(row = 4, column = 0))
 
         assertEquals(initialState, repository.currentState)
-    }
-
-    private class FakeGameRepository(initialState: ActiveGameState?) : GameRepository {
-
-        private val state = MutableStateFlow(initialState)
-        val currentState: ActiveGameState?
-            get() = state.value
-
-        override fun observeActiveGameState(): Flow<ActiveGameState?> = state
-
-        override fun updateActiveGameState(
-            transform: ActiveGameState?.() -> ActiveGameState?,
-        ) {
-            state.value = state.value.transform()
-        }
-
-        override fun clear() {
-            state.value = null
-        }
     }
 }

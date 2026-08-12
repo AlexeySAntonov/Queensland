@@ -11,7 +11,7 @@ import me.tatarka.inject.annotations.Inject
 class RouterImpl : Router {
     private val eventsChannel = Channel<NavigationEvent>(Channel.BUFFERED)
 
-    override val events: Flow<NavigationEvent> = eventsChannel.receiveAsFlow()
+    override val events: Flow<NavigationEvent> = eventsChannel.receiveAsFlow() // TODO handle double clicks
 
     override fun openGameConfiguration() {
         eventsChannel.trySend(NavigationEvent.OpenGameConfiguration)

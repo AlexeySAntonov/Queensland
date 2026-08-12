@@ -7,4 +7,5 @@ data class GameUiState(
     val queenPositions: Set<BoardPosition>,
     val conflictingPositions: Set<BoardPosition>,
     val remainingQueenCount: Int,
+    val formattedTimeSpent: String,
 )
