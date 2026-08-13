@@ -29,6 +29,7 @@ dependencyResolutionManagement {
 
 include(":androidApp")
 include(":app-shell")
+include(":core-db-api")
 include(":core-db-impl")
 include(":core-di")
 include(":core-ui-base")

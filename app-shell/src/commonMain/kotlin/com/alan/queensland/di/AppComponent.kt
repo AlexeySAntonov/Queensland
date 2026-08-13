@@ -1,10 +1,7 @@
 package com.alan.queensland.di
 
-import com.alan.queensland.core.db.impl.data.QueenslandDatabase
 import com.alan.queensland.core.db.impl.di.CoreDatabaseModule
 import com.alan.queensland.core.di.Singleton
-import com.alan.queensland.core.utils.flow.CoroutineDispatchers
-import com.alan.queensland.game.api.GameRepository
 import com.alan.queensland.game.impl.di.CoreGameModule
 import com.alan.queensland.game.impl.di.GameComponent
 import com.alan.queensland.home.impl.di.HomeComponent
@@ -23,9 +20,6 @@ abstract class AppComponent :
     DispatchersModule,
     FeatureFactoryModule {
 
-    abstract fun coroutineDispatchers(): CoroutineDispatchers
-    abstract fun database(): QueenslandDatabase
-    abstract fun gameRepository(): GameRepository
     abstract fun router(): Router
     abstract fun gameDependencies(): GameComponent.Dependencies
     abstract fun homeDependencies(): HomeComponent.Dependencies

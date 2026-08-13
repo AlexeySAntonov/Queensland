@@ -1,5 +1,6 @@
 package com.alan.queensland.game.impl.data
 
+import com.alan.queensland.core.db.api.GameResultsDatasource
 import com.alan.queensland.core.di.Singleton
 import com.alan.queensland.game.api.ActiveGameState
 import com.alan.queensland.game.api.GameRepository
@@ -10,7 +11,9 @@ import me.tatarka.inject.annotations.Inject
 
 @Singleton
 @Inject
-class GameRepositoryImpl : GameRepository {
+class GameRepositoryImpl(
+    private val gameResultsDatasource: GameResultsDatasource,
+) : GameRepository {
 
     private val activeGameState = MutableStateFlow<ActiveGameState?>(null)
 
@@ -18,6 +21,17 @@ class GameRepositoryImpl : GameRepository {
 
     override fun updateActiveGameState(transform: ActiveGameState?.() -> ActiveGameState?) {
         activeGameState.update { currentState -> currentState.transform() }
+    }
+
+    override suspend fun completeActiveGame(): Boolean {
+        val completedGame = activeGameState.value ?: return false
+
+        gameResultsDatasource.saveResult(
+            boardSize = completedGame.boardSize,
+            timeSpentMillis = completedGame.timeSpentMillis,
+        )
+        activeGameState.value = null
+        return true
     }
 
     override fun clear() {

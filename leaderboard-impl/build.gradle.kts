@@ -26,14 +26,17 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":core-db-api"))
             implementation(project(":core-di"))
             implementation(project(":core-ui-base"))
+            implementation(project(":core-utils"))
             implementation(project(":navigation-api"))
 
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.compose.runtime)
             implementation(libs.compose.ui)
+            implementation(libs.kermit)
             implementation(libs.kotlinx.atomicfu)
             implementation(libs.tatarka.inject.runtime)
         }

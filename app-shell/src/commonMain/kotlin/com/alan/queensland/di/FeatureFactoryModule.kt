@@ -1,5 +1,6 @@
 package com.alan.queensland.di
 
+import com.alan.queensland.core.db.api.GameResultsDatasource
 import com.alan.queensland.core.di.Singleton
 import com.alan.queensland.core.utils.flow.CoroutineDispatchers
 import com.alan.queensland.game.api.GameRepository
@@ -40,9 +41,13 @@ interface FeatureFactoryModule {
     @Provides
     @Singleton
     fun bindLeaderBoardDependencies(
+        gameResultsDatasource: GameResultsDatasource,
+        coroutineDispatchers: CoroutineDispatchers,
         router: Router,
     ): LeaderBoardComponent.Dependencies {
         return object : LeaderBoardComponent.Dependencies {
+            override fun gameResultsDatasource(): GameResultsDatasource = gameResultsDatasource
+            override fun coroutineDispatchers(): CoroutineDispatchers = coroutineDispatchers
             override fun router(): Router = router
         }
     }

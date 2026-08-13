@@ -6,6 +6,7 @@ import com.alan.queensland.core.ui.base.model.UiState
 import com.alan.queensland.core.utils.flow.CoroutineDispatchers
 import com.alan.queensland.game.api.BoardPosition
 import com.alan.queensland.game.impl.business.AddElapsedGameTimeUseCase
+import com.alan.queensland.game.impl.business.CompleteGameUseCase
 import com.alan.queensland.game.impl.business.ObserveActiveGameStateUseCase
 import com.alan.queensland.game.impl.business.ResetGameUseCase
 import com.alan.queensland.game.impl.business.ToggleQueenUseCase
@@ -18,10 +19,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
@@ -36,6 +41,7 @@ class GameViewModel(
     coroutineDispatchers: CoroutineDispatchers,
     gameUiStateMapper: GameUiStateMapper,
     private val addElapsedGameTimeUseCase: AddElapsedGameTimeUseCase,
+    private val completeGameUseCase: CompleteGameUseCase,
     private val resetGameUseCase: ResetGameUseCase,
     private val toggleQueenUseCase: ToggleQueenUseCase,
     private val router: Router,
@@ -45,25 +51,36 @@ class GameViewModel(
     private var timerStartedAt: TimeMark? = null
     private val currentSessionElapsedMillis = MutableStateFlow(0L)
 
-    val uiState = observeActiveGameStateUseCase()
+    private val validatedGameState = observeActiveGameStateUseCase()
         .filterNotNull()
         .map { state -> state to validateQueenPlacementUseCase(state) }
         .flowOn(coroutineDispatchers.Processor)
+        .shareIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            replay = 1,
+        )
+
+    val uiState = validatedGameState
         .combine(currentSessionElapsedMillis) { (state, validation), currentSessionElapsedMillis ->
-            UiState.Data(
-                value = gameUiStateMapper(
-                    state = state,
-                    validation = validation,
-                    currentSessionElapsedMillis = currentSessionElapsedMillis,
-                ),
+            gameUiStateMapper(
+                state = state,
+                validation = validation,
+                currentSessionElapsedMillis = currentSessionElapsedMillis,
             )
         }
-        .catch<UiState<GameUiState>> { emit(UiState.Error) }
+        .flowOn(coroutineDispatchers.Processor)
+        .map<GameUiState, UiState<GameUiState>> { gameUiState -> UiState.Data(gameUiState) }
+        .catch { emit(UiState.Error) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = UI_STATE_SHARING_TIMEOUT_MILLIS),
             initialValue = UiState.Loading,
         )
+
+    init {
+        observeGameCompletion()
+    }
 
     override fun onCleared() {
         stopTimer()
@@ -114,6 +131,24 @@ class GameViewModel(
         timerStartedAt = null
         currentSessionElapsedMillis.value = 0L
         elapsedMillis?.let(addElapsedGameTimeUseCase::invoke)
+    }
+
+    private fun observeGameCompletion() {
+        viewModelScope.launch {
+            validatedGameState
+                .filter { (_, validation) -> validation.isSolved }
+                .take(1)
+                .first()
+
+            onGameCompleted()
+        }
+    }
+
+    private suspend fun onGameCompleted() {
+        stopTimer()
+        completeGameUseCase().onFailure {
+            // TODO show alert with retry ::onGameCompleted
+        }
     }
 
     private companion object {

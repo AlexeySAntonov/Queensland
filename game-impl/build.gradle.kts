@@ -27,7 +27,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":game-api"))
-            implementation(project(":core-db-impl"))
+            implementation(project(":core-db-api"))
             implementation(project(":core-di"))
             implementation(project(":core-ui-base"))
             implementation(project(":core-utils"))

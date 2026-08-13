@@ -8,5 +8,7 @@ interface GameRepository {
 
     fun updateActiveGameState(transform: ActiveGameState?.() -> ActiveGameState?)
 
+    suspend fun completeActiveGame(): Boolean
+
     fun clear()
 }

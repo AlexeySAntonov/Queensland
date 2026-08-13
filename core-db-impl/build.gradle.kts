@@ -21,6 +21,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(project(":core-db-api"))
             implementation(project(":core-di"))
             implementation(project(":core-utils"))
 

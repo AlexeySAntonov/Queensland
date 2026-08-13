@@ -5,6 +5,8 @@ import com.alan.queensland.game.api.BoardPosition
 import com.alan.queensland.game.impl.business.QueenPlacementValidationResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class GameUiStateMapperTest {
 
@@ -36,6 +38,7 @@ class GameUiStateMapperTest {
         assertEquals(conflictingPositions, result.conflictingPositions)
         assertEquals(2, result.remainingQueenCount)
         assertEquals("00:02", result.formattedTimeSpent)
+        assertFalse(result.isSolved)
     }
 
     @Test
@@ -47,11 +50,12 @@ class GameUiStateMapperTest {
             ),
             validation = QueenPlacementValidationResult(
                 conflictingPositions = emptySet(),
-                isSolved = false,
+                isSolved = true,
             ),
             currentSessionElapsedMillis = 61_000L,
         )
 
         assertEquals("1:01:01", result.formattedTimeSpent)
+        assertTrue(result.isSolved)
     }
 }

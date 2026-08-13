@@ -13,12 +13,9 @@ interface GameResultDao {
     @Query("SELECT * FROM game_results ORDER BY createdAtMillis DESC")
     fun observeResults(): Flow<List<GameResultEntity>>
 
-    @Query("SELECT * FROM game_results WHERE boardSize = :boardSize ORDER BY timeSpentMillis ASC")
-    fun observeResults(boardSize: Int): Flow<List<GameResultEntity>>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: GameResultEntity)
 
-    @Query("DELETE FROM game_results")
-    suspend fun deleteAll()
+    @Query("DELETE FROM game_results WHERE uuid = :uuid")
+    suspend fun delete(uuid: String)
 }

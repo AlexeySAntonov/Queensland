@@ -14,12 +14,21 @@ internal class FakeGameRepository(
     val currentState: ActiveGameState?
         get() = state.value
 
+    val completedGames = mutableListOf<ActiveGameState>()
+
     override fun observeActiveGameState(): Flow<ActiveGameState?> = state
 
     override fun updateActiveGameState(
         transform: ActiveGameState?.() -> ActiveGameState?,
     ) {
         state.value = state.value.transform()
+    }
+
+    override suspend fun completeActiveGame(): Boolean {
+        val completedGame = state.value ?: return false
+        completedGames += completedGame
+        state.value = null
+        return true
     }
 
     override fun clear() {
