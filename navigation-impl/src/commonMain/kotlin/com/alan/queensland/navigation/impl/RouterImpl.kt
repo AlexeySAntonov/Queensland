@@ -21,8 +21,8 @@ class RouterImpl : Router {
         eventsChannel.trySend(NavigationEvent.OpenGame)
     }
 
-    override fun openResults() {
-        eventsChannel.trySend(NavigationEvent.OpenResults)
+    override fun openLeaderBoard() {
+        eventsChannel.trySend(NavigationEvent.OpenLeaderBoard)
     }
 
     override fun back() {

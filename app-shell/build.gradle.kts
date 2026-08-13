@@ -41,7 +41,7 @@ kotlin {
             implementation(project(":core-utils"))
             implementation(project(":game-impl"))
             implementation(project(":home-impl"))
-            implementation(project(":navigation-api"))
+            implementation(project(":leaderboard-impl"))
             implementation(project(":navigation-impl"))
 
             implementation(libs.compose.runtime)

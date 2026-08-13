@@ -5,7 +5,6 @@ import com.alan.queensland.core.utils.flow.CoroutineDispatchers
 import com.alan.queensland.game.api.GameRepository
 import com.alan.queensland.game.impl.ui.GameViewModel
 import com.alan.queensland.game.impl.ui.configuration.GameConfigurationViewModel
-import com.alan.queensland.game.impl.ui.results.ResultsViewModel
 import com.alan.queensland.navigation.api.Router
 import me.tatarka.inject.annotations.Component
 import me.tatarka.inject.annotations.KmpComponentCreate
@@ -21,7 +20,6 @@ abstract class GameComponent(
 
     abstract val gameConfigurationViewModel: GameConfigurationViewModel
     abstract val gameViewModel: GameViewModel
-    abstract val resultsViewModel: ResultsViewModel
 
     interface Dependencies {
         fun gameRepository(): GameRepository

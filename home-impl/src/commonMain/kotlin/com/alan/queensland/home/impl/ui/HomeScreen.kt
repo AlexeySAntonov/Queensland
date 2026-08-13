@@ -54,8 +54,8 @@ fun HomeScreen(
                 )
             }
             AppButton(
-                text = "See results",
-                onClick = viewModel::onSeeResultsClick,
+                text = "Leaderboard",
+                onClick = viewModel::onLeaderBoardClick,
                 modifier = Modifier.fillMaxWidth(),
                 isOutlined = true,
             )

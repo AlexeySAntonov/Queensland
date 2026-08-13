@@ -7,6 +7,6 @@ interface Router {
 
     fun openGameConfiguration()
     fun openGame()
-    fun openResults()
+    fun openLeaderBoard()
     fun back()
 }

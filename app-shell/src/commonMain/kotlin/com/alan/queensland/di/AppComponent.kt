@@ -8,6 +8,7 @@ import com.alan.queensland.game.api.GameRepository
 import com.alan.queensland.game.impl.di.CoreGameModule
 import com.alan.queensland.game.impl.di.GameComponent
 import com.alan.queensland.home.impl.di.HomeComponent
+import com.alan.queensland.leaderboard.impl.di.LeaderBoardComponent
 import com.alan.queensland.navigation.api.Router
 import com.alan.queensland.navigation.impl.di.CoreNavigationModule
 import me.tatarka.inject.annotations.Component
@@ -28,6 +29,7 @@ abstract class AppComponent :
     abstract fun router(): Router
     abstract fun gameDependencies(): GameComponent.Dependencies
     abstract fun homeDependencies(): HomeComponent.Dependencies
+    abstract fun leaderBoardDependencies(): LeaderBoardComponent.Dependencies
 
     companion object {
         fun init(): AppComponent = createKmp()

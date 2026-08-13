@@ -1,14 +1,19 @@
-package com.alan.queensland.game.impl.ui.results
+package com.alan.queensland.leaderboard.impl.ui
 
 import com.alan.queensland.core.ui.base.lifecycle.BaseViewModel
+import com.alan.queensland.leaderboard.impl.di.LeaderBoardComponentHolder
 import com.alan.queensland.navigation.api.Router
 import me.tatarka.inject.annotations.Inject
 
-// TODO extract into stadnalone leaderboard module w own component, etc
 @Inject
-class ResultsViewModel(
+class LeaderBoardViewModel(
     private val router: Router,
 ) : BaseViewModel() {
+
+    override fun onCleared() {
+        LeaderBoardComponentHolder.reset()
+        super.onCleared()
+    }
 
     fun onBackClick() {
         router.back()

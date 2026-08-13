@@ -1,4 +1,4 @@
-package com.alan.queensland.game.impl.ui.results
+package com.alan.queensland.leaderboard.impl.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,13 +16,13 @@ import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 
 @Composable
-fun ResultsScreen(
-    viewModel: ResultsViewModel,
+fun LeaderBoardScreen(
+    viewModel: LeaderBoardViewModel,
 ) {
     Scaffold(
         topBar = {
             AppToolbar(
-                title = "Results",
+                title = "Leaderboard",
                 navigationIcon = Icons.Default.Close,
                 navigationIconContentDescription = "Back",
                 onNavigationClick = viewModel::onBackClick,

@@ -5,6 +5,7 @@ import com.alan.queensland.core.utils.flow.CoroutineDispatchers
 import com.alan.queensland.game.api.GameRepository
 import com.alan.queensland.game.impl.di.GameComponent
 import com.alan.queensland.home.impl.di.HomeComponent
+import com.alan.queensland.leaderboard.impl.di.LeaderBoardComponent
 import com.alan.queensland.navigation.api.Router
 import me.tatarka.inject.annotations.Provides
 
@@ -33,6 +34,16 @@ interface FeatureFactoryModule {
             override fun gameRepository(): GameRepository = gameRepository
             override fun router(): Router = router
             override fun coroutineDispatchers(): CoroutineDispatchers = coroutineDispatchers
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun bindLeaderBoardDependencies(
+        router: Router,
+    ): LeaderBoardComponent.Dependencies {
+        return object : LeaderBoardComponent.Dependencies {
+            override fun router(): Router = router
         }
     }
 }

@@ -10,7 +10,7 @@ plugins {
 
 kotlin {
     android {
-        namespace = "com.alan.queensland.home.impl"
+        namespace = "com.alan.queensland.leaderboard.impl"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         compilerOptions {
@@ -28,9 +28,7 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":core-di"))
             implementation(project(":core-ui-base"))
-            implementation(project(":game-api"))
             implementation(project(":navigation-api"))
-            implementation(project(":leaderboard-api"))
 
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)

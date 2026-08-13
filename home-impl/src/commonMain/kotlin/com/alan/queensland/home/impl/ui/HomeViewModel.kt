@@ -6,7 +6,7 @@ import com.alan.queensland.game.api.ObserveHasActiveGameUseCase
 import com.alan.queensland.game.api.ResumeGameUseCase
 import com.alan.queensland.game.api.StartNewGameUseCase
 import com.alan.queensland.home.impl.di.HomeComponentHolder
-import com.alan.queensland.navigation.api.Router
+import com.alan.queensland.leaderboard.api.OpenLeaderBoardUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -17,7 +17,7 @@ class HomeViewModel(
     observeHasActiveGameUseCase: ObserveHasActiveGameUseCase,
     private val startNewGameUseCase: StartNewGameUseCase,
     private val resumeGameUseCase: ResumeGameUseCase,
-    private val router: Router,
+    private val openLeaderBoardUseCase: OpenLeaderBoardUseCase,
 ) : BaseViewModel() {
 
     val hasActiveGame: StateFlow<Boolean> = observeHasActiveGameUseCase()
@@ -40,7 +40,7 @@ class HomeViewModel(
         resumeGameUseCase()
     }
 
-    fun onSeeResultsClick() {
-        router.openResults()
+    fun onLeaderBoardClick() {
+        openLeaderBoardUseCase()
     }
 }
