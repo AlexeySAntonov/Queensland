@@ -11,7 +11,6 @@ import com.alan.queensland.game.impl.business.ObserveActiveGameStateUseCase
 import com.alan.queensland.game.impl.business.ResetGameUseCase
 import com.alan.queensland.game.impl.business.ToggleQueenUseCase
 import com.alan.queensland.game.impl.business.ValidateQueenPlacementUseCase
-import com.alan.queensland.game.impl.di.GameComponentHolder
 import com.alan.queensland.navigation.api.Router
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -84,7 +83,6 @@ class GameViewModel(
 
     override fun onCleared() {
         stopTimer()
-        GameComponentHolder.reset()
         super.onCleared()
     }
 

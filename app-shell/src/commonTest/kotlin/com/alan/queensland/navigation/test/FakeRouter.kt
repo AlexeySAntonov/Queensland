@@ -19,6 +19,10 @@ internal class FakeRouter : Router {
         sentEvents += NavigationEvent.OpenGame
     }
 
+    override fun openGameFinished() {
+        sentEvents += NavigationEvent.OpenGameFinished
+    }
+
     override fun openLeaderBoard() {
         sentEvents += NavigationEvent.OpenLeaderBoard
     }

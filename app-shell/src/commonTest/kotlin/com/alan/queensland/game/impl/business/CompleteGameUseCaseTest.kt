@@ -13,7 +13,7 @@ import kotlin.test.assertTrue
 class CompleteGameUseCaseTest {
 
     @Test
-    fun savesResultClearsGameAndNavigatesBack() = runTest {
+    fun savesResultClearsGameAndOpensFinishedScreen() = runTest {
         val gameState = ActiveGameState(
             boardSize = 6,
             timeSpentMillis = 12_345L,
@@ -29,7 +29,7 @@ class CompleteGameUseCaseTest {
         assertTrue(result.isSuccess)
         assertEquals(listOf(gameState), repository.completedGames)
         assertNull(repository.currentState)
-        assertEquals(listOf<NavigationEvent>(NavigationEvent.Back), router.sentEvents)
+        assertEquals(listOf<NavigationEvent>(NavigationEvent.OpenGameFinished), router.sentEvents)
     }
 
     @Test

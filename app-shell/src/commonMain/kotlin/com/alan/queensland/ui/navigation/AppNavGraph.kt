@@ -13,6 +13,7 @@ import com.alan.queensland.navigation.api.NavigationEvent
 import com.alan.queensland.navigation.impl.Screens
 import com.alan.queensland.ui.navigation.nodes.gameNode
 import com.alan.queensland.ui.navigation.nodes.gameConfigurationNode
+import com.alan.queensland.ui.navigation.nodes.gameFinishedNode
 import com.alan.queensland.ui.navigation.nodes.homeNode
 import com.alan.queensland.ui.navigation.nodes.leaderBoardNode
 
@@ -28,6 +29,7 @@ fun AppNavGraph(
             when (event) {
                 NavigationEvent.OpenGameConfiguration -> navController.openGameConfiguration()
                 NavigationEvent.OpenGame -> navController.openGame()
+                NavigationEvent.OpenGameFinished -> navController.openGameFinished()
                 NavigationEvent.OpenLeaderBoard -> navController.openLeaderBoard()
                 NavigationEvent.Back -> navController.popBackStack()
             }
@@ -41,6 +43,7 @@ fun AppNavGraph(
         homeNode { HomeComponentHolder.get(appComponent.homeDependencies()) }
         gameConfigurationNode { GameComponentHolder.get(appComponent.gameDependencies()) }
         gameNode { GameComponentHolder.get(appComponent.gameDependencies()) }
+        gameFinishedNode { GameComponentHolder.get(appComponent.gameDependencies()) }
         leaderBoardNode { LeaderBoardComponentHolder.get(appComponent.leaderBoardDependencies()) }
     }
 }
@@ -54,6 +57,18 @@ private fun NavHostController.openGame() {
         // Consider switching to a sub-navgraph if configuration gets additional steps.
         if (fromConfiguration) {
             popUpTo(Screens.GameConfiguration.route) {
+                inclusive = true
+            }
+        }
+    }
+}
+
+private fun NavHostController.openGameFinished() {
+    val fromGame = currentDestination?.route == Screens.Game.route
+
+    navigate(Screens.GameFinished.route) {
+        if (fromGame) {
+            popUpTo(Screens.Game.route) {
                 inclusive = true
             }
         }
