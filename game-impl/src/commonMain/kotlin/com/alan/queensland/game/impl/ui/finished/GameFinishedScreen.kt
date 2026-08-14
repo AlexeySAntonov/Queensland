@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,7 +32,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,23 +46,31 @@ import kotlin.math.sin
 fun GameFinishedScreen(
     viewModel: GameFinishedViewModel,
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeDrawing),
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
     ) {
-        CelebrationConfetti(modifier = Modifier.fillMaxSize())
-        VictoryContent(modifier = Modifier.align(Alignment.Center))
-        IconButton(
-            onClick = viewModel::onCloseClick,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(Paddings.half),
-        ) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Close",
-            )
+        Box(modifier = Modifier.fillMaxSize()) {
+            CelebrationConfetti(modifier = Modifier.fillMaxSize())
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .windowInsetsPadding(WindowInsets.safeDrawing),
+            ) {
+                VictoryContent(modifier = Modifier.align(Alignment.Center))
+                IconButton(
+                    onClick = viewModel::onCloseClick,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(Paddings.half),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close",
+                    )
+                }
+            }
         }
     }
 }
@@ -130,46 +141,100 @@ private fun CelebrationConfetti(
         MaterialTheme.colorScheme.tertiary,
         MaterialTheme.colorScheme.error,
     )
-    val infiniteTransition = rememberInfiniteTransition(label = "Confetti animation")
-    val progress by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 4_800, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart,
-        ),
-        label = "Confetti progress",
-    )
+    val animationProgress = rememberInfiniteTransition(label = "Confetti animation")
+        .animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = CONFETTI_FALL_DURATION_MILLIS, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart,
+            ),
+            label = "Confetti progress",
+        )
 
     Canvas(modifier = modifier) {
-        val particleWidth = 7.dp.toPx()
-        val particleHeight = 16.dp.toPx()
+        val baseParticleSize = Size(
+            width = 7.dp.toPx(),
+            height = 16.dp.toPx(),
+        )
         val swayDistance = 24.dp.toPx()
 
-        repeat(CONFETTI_COUNT) { index ->
-            val startOffset = ((index * 29) % CONFETTI_COUNT) / CONFETTI_COUNT.toFloat()
-            val travelProgress = (progress + startOffset) % 1f
-            val baseX = ((index * 47) % 101) / 100f * size.width
-            val sway = sin(travelProgress * PI * 4 + index).toFloat() * swayDistance
-            val center = Offset(
-                x = (baseX + sway).coerceIn(0f, size.width),
-                y = travelProgress * (size.height + particleHeight * 2) - particleHeight,
+        confettiParticleSpecs.forEach { particle ->
+            drawConfettiParticle(
+                particle = particle,
+                animationProgress = animationProgress.value,
+                color = colors[particle.colorIndex % colors.size],
+                baseParticleSize = baseParticleSize,
+                swayDistance = swayDistance,
             )
-            val width = if (index % 3 == 0) particleWidth * 1.5f else particleWidth
-            val height = if (index % 4 == 0) particleHeight * 0.65f else particleHeight
-
-            rotate(
-                degrees = (travelProgress * 720f + index * 31f) % 360f,
-                pivot = center,
-            ) {
-                drawRect(
-                    color = colors[index % colors.size],
-                    topLeft = Offset(center.x - width / 2, center.y - height / 2),
-                    size = Size(width = width, height = height),
-                )
-            }
         }
     }
 }
 
+private fun DrawScope.drawConfettiParticle(
+    particle: ConfettiParticleSpec,
+    animationProgress: Float,
+    color: Color,
+    baseParticleSize: Size,
+    swayDistance: Float,
+) {
+    val travelProgress = (animationProgress + particle.startProgress) % 1f
+    val appliedSwayDistance = minOf(swayDistance, size.width / 2)
+    val horizontalSway = sin(
+        travelProgress * CONFETTI_SWAY_RADIANS + particle.swayPhaseRadians,
+    ).toFloat() * appliedSwayDistance
+    val horizontalTravelDistance = size.width - appliedSwayDistance * 2
+    val center = Offset(
+        x = appliedSwayDistance + particle.horizontalFraction * horizontalTravelDistance + horizontalSway,
+        y = travelProgress * (size.height + baseParticleSize.height * 2) - baseParticleSize.height,
+    )
+    val particleSize = Size(
+        width = baseParticleSize.width * particle.widthMultiplier,
+        height = baseParticleSize.height * particle.heightMultiplier,
+    )
+    val rotationDegrees = (
+        travelProgress * CONFETTI_ROTATION_DEGREES + particle.rotationOffsetDegrees
+    ) % FULL_ROTATION_DEGREES
+
+    rotate(degrees = rotationDegrees, pivot = center) {
+        drawRect(
+            color = color,
+            topLeft = Offset(
+                x = center.x - particleSize.width / 2,
+                y = center.y - particleSize.height / 2,
+            ),
+            size = particleSize,
+        )
+    }
+}
+
+private data class ConfettiParticleSpec(
+    val startProgress: Float,
+    val horizontalFraction: Float,
+    val swayPhaseRadians: Double,
+    val rotationOffsetDegrees: Float,
+    val widthMultiplier: Float,
+    val heightMultiplier: Float,
+    val colorIndex: Int,
+)
+
+// Fixed offsets let one shared timeline produce a varied, deterministic particle field.
+private val confettiParticleSpecs = List(CONFETTI_COUNT) { index ->
+    ConfettiParticleSpec(
+        startProgress = index / CONFETTI_COUNT.toFloat(),
+        horizontalFraction = (index * GOLDEN_RATIO_CONJUGATE) % 1f,
+        swayPhaseRadians = index.toDouble(),
+        rotationOffsetDegrees = index * ROTATION_OFFSET_STEP_DEGREES,
+        widthMultiplier = if (index % 3 == 0) 1.5f else 1f,
+        heightMultiplier = if (index % 4 == 0) 0.65f else 1f,
+        colorIndex = index,
+    )
+}
+
 private const val CONFETTI_COUNT = 44
+private const val CONFETTI_FALL_DURATION_MILLIS = 4_800
+private const val CONFETTI_ROTATION_DEGREES = 720f
+private const val FULL_ROTATION_DEGREES = 360f
+private const val GOLDEN_RATIO_CONJUGATE = 0.61803395f
+private const val ROTATION_OFFSET_STEP_DEGREES = 31f
+private val CONFETTI_SWAY_RADIANS = PI * 4

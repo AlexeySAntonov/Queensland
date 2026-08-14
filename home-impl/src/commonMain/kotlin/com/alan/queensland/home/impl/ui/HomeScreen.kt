@@ -1,12 +1,12 @@
 package com.alan.queensland.home.impl.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,43 +22,48 @@ fun HomeScreen(
 ) {
     val hasActiveGame by viewModel.hasActiveGame.collectAsStateWithLifecycle()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
-            .padding(Paddings.one),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
     ) {
-        Text(
-            text = "Queensland",
-            style = MaterialTheme.typography.headlineMedium,
-        )
         Column(
             modifier = Modifier
-                .padding(top = Paddings.one)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(Paddings.half),
+                .fillMaxSize()
+                .padding(Paddings.one),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
         ) {
-            AppButton(
-                text = "New game",
-                onClick = viewModel::onNewGameClick,
-                modifier = Modifier.fillMaxWidth(),
+            Text(
+                text = "Queensland",
+                style = MaterialTheme.typography.headlineMedium,
             )
-            if (hasActiveGame) {
+            Column(
+                modifier = Modifier
+                    .padding(top = Paddings.one)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(Paddings.half),
+            ) {
                 AppButton(
-                    text = "Resume game",
-                    onClick = viewModel::onResumeGameClick,
+                    text = "New game",
+                    onClick = viewModel::onNewGameClick,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                if (hasActiveGame) {
+                    AppButton(
+                        text = "Resume game",
+                        onClick = viewModel::onResumeGameClick,
+                        modifier = Modifier.fillMaxWidth(),
+                        isOutlined = true,
+                    )
+                }
+                AppButton(
+                    text = "Leaderboard",
+                    onClick = viewModel::onLeaderBoardClick,
                     modifier = Modifier.fillMaxWidth(),
                     isOutlined = true,
                 )
             }
-            AppButton(
-                text = "Leaderboard",
-                onClick = viewModel::onLeaderBoardClick,
-                modifier = Modifier.fillMaxWidth(),
-                isOutlined = true,
-            )
         }
     }
 }
