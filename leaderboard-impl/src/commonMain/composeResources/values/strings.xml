@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="leaderboard_title">Leaderboard</string>
+    <string name="leaderboard_load_error">Unable to load leaderboard</string>
+    <string name="leaderboard_empty">No completed games yet</string>
+    <string name="leaderboard_board_size">%1$d x %2$d board</string>
+    <string name="leaderboard_solved_in">Solved in %1$s</string>
+    <string name="delete_result">Delete result</string>
+    <string name="navigation_close">Close</string>
+</resources>

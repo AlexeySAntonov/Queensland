@@ -22,8 +22,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alan.queensland.core.ui.base.compose.components.AppButton
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import queensland.home_impl.generated.resources.Res
 import queensland.home_impl.generated.resources.app_icon
+import queensland.home_impl.generated.resources.leaderboard
+import queensland.home_impl.generated.resources.new_game
+import queensland.home_impl.generated.resources.resume_game
 
 @Composable
 fun HomeScreen(
@@ -58,20 +62,20 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(Paddings.half),
             ) {
                 AppButton(
-                    text = "New game",
+                    text = stringResource(Res.string.new_game),
                     onClick = viewModel::onNewGameClick,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 if (hasActiveGame) {
                     AppButton(
-                        text = "Resume game",
+                        text = stringResource(Res.string.resume_game),
                         onClick = viewModel::onResumeGameClick,
                         modifier = Modifier.fillMaxWidth(),
                         isOutlined = true,
                     )
                 }
                 AppButton(
-                    text = "Leaderboard",
+                    text = stringResource(Res.string.leaderboard),
                     onClick = viewModel::onLeaderBoardClick,
                     modifier = Modifier.fillMaxWidth(),
                     isOutlined = true,

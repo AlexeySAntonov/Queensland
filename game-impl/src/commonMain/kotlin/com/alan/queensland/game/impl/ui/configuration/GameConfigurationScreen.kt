@@ -26,6 +26,13 @@ import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import com.alan.queensland.core.ui.base.util.GameBoardSize
+import org.jetbrains.compose.resources.stringResource
+import queensland.game_impl.generated.resources.Res
+import queensland.game_impl.generated.resources.board_size_decrease_symbol
+import queensland.game_impl.generated.resources.board_size_increase_symbol
+import queensland.game_impl.generated.resources.game_configuration_title
+import queensland.game_impl.generated.resources.navigation_back
+import queensland.game_impl.generated.resources.start_game
 
 @Composable
 fun GameConfigurationScreen(
@@ -36,9 +43,9 @@ fun GameConfigurationScreen(
     Scaffold(
         topBar = {
             AppToolbar(
-                title = "Game configuration",
+                title = stringResource(Res.string.game_configuration_title),
                 navigationIcon = Icons.AutoMirrored.Rounded.ArrowBack,
-                navigationIconContentDescription = "Back",
+                navigationIconContentDescription = stringResource(Res.string.navigation_back),
                 onNavigationClick = viewModel::onBackClick,
             )
         },
@@ -65,7 +72,7 @@ fun GameConfigurationScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             AppButton(
-                text = "Start game",
+                text = stringResource(Res.string.start_game),
                 onClick = viewModel::onContinueClick,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -89,7 +96,7 @@ private fun BoardSizeSelector(
             modifier = Modifier.size(64.dp),
         ) {
             Text(
-                text = "-",
+                text = stringResource(Res.string.board_size_decrease_symbol),
                 style = MaterialTheme.typography.headlineMedium,
             )
         }
@@ -108,7 +115,7 @@ private fun BoardSizeSelector(
             modifier = Modifier.size(64.dp),
         ) {
             Text(
-                text = "+",
+                text = stringResource(Res.string.board_size_increase_symbol),
                 style = MaterialTheme.typography.headlineMedium,
             )
         }

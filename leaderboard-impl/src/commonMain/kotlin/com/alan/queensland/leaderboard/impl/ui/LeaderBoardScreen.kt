@@ -27,6 +27,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import com.alan.queensland.core.ui.base.model.UiState
+import org.jetbrains.compose.resources.stringResource
+import queensland.leaderboard_impl.generated.resources.Res
+import queensland.leaderboard_impl.generated.resources.delete_result
+import queensland.leaderboard_impl.generated.resources.leaderboard_board_size
+import queensland.leaderboard_impl.generated.resources.leaderboard_empty
+import queensland.leaderboard_impl.generated.resources.leaderboard_load_error
+import queensland.leaderboard_impl.generated.resources.leaderboard_solved_in
+import queensland.leaderboard_impl.generated.resources.leaderboard_title
+import queensland.leaderboard_impl.generated.resources.navigation_close
 
 @Composable
 fun LeaderBoardScreen(
@@ -37,9 +46,9 @@ fun LeaderBoardScreen(
     Scaffold(
         topBar = {
             AppToolbar(
-                title = "Leaderboard",
+                title = stringResource(Res.string.leaderboard_title),
                 navigationIcon = Icons.Default.Close,
-                navigationIconContentDescription = "Back",
+                navigationIconContentDescription = stringResource(Res.string.navigation_close),
                 onNavigationClick = viewModel::onBackClick,
             )
         },
@@ -66,7 +75,7 @@ private fun BoxScope.LeaderBoardContent(
     when (uiState) {
         UiState.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         UiState.Error -> Text(
-            text = "Unable to load leaderboard",
+            text = stringResource(Res.string.leaderboard_load_error),
             modifier = Modifier.align(Alignment.Center),
             style = MaterialTheme.typography.bodyLarge,
         )
@@ -85,7 +94,7 @@ private fun BoxScope.LeaderBoardResults(
 ) {
     if (state.results.isEmpty()) {
         Text(
-            text = "No completed games yet",
+            text = stringResource(Res.string.leaderboard_empty),
             modifier = Modifier.align(Alignment.Center),
             style = MaterialTheme.typography.bodyLarge,
         )
@@ -113,11 +122,22 @@ private fun GameResultRow(
 ) {
     ListItem(
         headlineContent = {
-            Text(text = "${result.boardSize} x ${result.boardSize} board")
+            Text(
+                text = stringResource(
+                    Res.string.leaderboard_board_size,
+                    result.boardSize,
+                    result.boardSize,
+                ),
+            )
         },
         supportingContent = {
             Column(verticalArrangement = Arrangement.spacedBy(Paddings.half)) {
-                Text(text = "Solved in ${result.formattedTimeSpent}")
+                Text(
+                    text = stringResource(
+                        Res.string.leaderboard_solved_in,
+                        result.formattedTimeSpent,
+                    ),
+                )
                 Text(
                     text = result.completedAt,
                     style = MaterialTheme.typography.bodySmall,
@@ -128,7 +148,7 @@ private fun GameResultRow(
             IconButton(onClick = onDeleteClick) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete result",
+                    contentDescription = stringResource(Res.string.delete_result),
                 )
             }
         },

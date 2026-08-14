@@ -39,6 +39,11 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
+import org.jetbrains.compose.resources.stringResource
+import queensland.game_impl.generated.resources.Res
+import queensland.game_impl.generated.resources.game_finished_message
+import queensland.game_impl.generated.resources.game_finished_title
+import queensland.game_impl.generated.resources.navigation_close
 import kotlin.math.PI
 import kotlin.math.sin
 
@@ -67,7 +72,7 @@ fun GameFinishedScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
+                        contentDescription = stringResource(Res.string.navigation_close),
                     )
                 }
             }
@@ -117,13 +122,13 @@ private fun VictoryContent(
         )
         Spacer(modifier = Modifier.height(Paddings.two))
         Text(
-            text = "Puzzle solved!",
+            text = stringResource(Res.string.game_finished_title),
             style = MaterialTheme.typography.displaySmall,
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(Paddings.half))
         Text(
-            text = "Every queen is safe.",
+            text = stringResource(Res.string.game_finished_message),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,

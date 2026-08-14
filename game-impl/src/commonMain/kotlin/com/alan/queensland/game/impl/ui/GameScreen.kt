@@ -44,6 +44,12 @@ import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import com.alan.queensland.core.ui.base.model.UiState
 import com.alan.queensland.game.api.BoardPosition
+import org.jetbrains.compose.resources.stringResource
+import queensland.game_impl.generated.resources.Res
+import queensland.game_impl.generated.resources.game_not_active
+import queensland.game_impl.generated.resources.game_screen_title
+import queensland.game_impl.generated.resources.navigation_back
+import queensland.game_impl.generated.resources.reset_game
 
 @Composable
 fun GameScreen(
@@ -59,9 +65,9 @@ fun GameScreen(
     Scaffold(
         topBar = {
             AppToolbar(
-                title = "Game",
+                title = stringResource(Res.string.game_screen_title),
                 navigationIcon = Icons.AutoMirrored.Rounded.ArrowBack,
-                navigationIconContentDescription = "Back",
+                navigationIconContentDescription = stringResource(Res.string.navigation_back),
                 onNavigationClick = viewModel::onBackClick,
             )
         },
@@ -105,7 +111,7 @@ private fun BoxScope.LoadingContent() {
 @Composable
 private fun BoxScope.ErrorContent() {
     Text(
-        text = "No active game", // TODO use resources
+        text = stringResource(Res.string.game_not_active),
         modifier = Modifier.align(Alignment.Center),
         style = MaterialTheme.typography.bodyLarge,
     )
@@ -139,7 +145,7 @@ private fun GameContent(
         }
         Spacer(modifier = Modifier.weight(1f))
         AppButton(
-            text = "Reset game",
+            text = stringResource(Res.string.reset_game),
             onClick = onResetGameClick,
             modifier = Modifier.fillMaxWidth(),
             isOutlined = true,
