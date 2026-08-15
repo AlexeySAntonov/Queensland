@@ -22,10 +22,10 @@ fun AppQueen(
         Image(
             painter = painterResource(Res.drawable.ic_queen_white),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize(QUEEN_SIZE_FRACTION),
+            modifier = Modifier.fillMaxSize(APP_QUEEN_SIZE_FRACTION),
             contentScale = ContentScale.Fit,
         )
     }
 }
 
-private const val QUEEN_SIZE_FRACTION = 0.8f
+const val APP_QUEEN_SIZE_FRACTION = 0.8f

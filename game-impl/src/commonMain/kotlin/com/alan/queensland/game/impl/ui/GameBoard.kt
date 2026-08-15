@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.dp
 import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
-import com.alan.queensland.core.ui.base.compose.components.AppQueen
 import com.alan.queensland.game.api.BoardPosition
 import kotlin.math.sqrt
 
@@ -32,6 +31,7 @@ internal fun GameBoard(
         AppChessBoard(
             boardSize = state.boardSize,
             modifier = Modifier.fillMaxSize(),
+            clipCellContent = false,
             onCellClick = onCellClick,
         ) { row, column ->
             QueenCell(
@@ -160,16 +160,16 @@ private fun BoxScope.QueenCell(
     position: BoardPosition,
     state: GameUiState,
 ) {
-    if (position !in state.queenPositions) return
+    val isPlaced = position in state.queenPositions
 
-    if (position in state.conflictingPositions) {
+    if (isPlaced && position in state.conflictingPositions) {
         Box(
             modifier = Modifier
                 .matchParentSize()
                 .background(ConflictColor.copy(alpha = CONFLICT_CELL_ALPHA)),
         )
     }
-    AppQueen(modifier = Modifier.matchParentSize())
+    LandingQueen(isPlaced = isPlaced)
 }
 
 private val ConflictColor = Color(0xFFFF1744)

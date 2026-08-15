@@ -24,6 +24,7 @@ fun AppChessBoard(
     lightSquareColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     darkSquareColor: Color = MaterialTheme.colorScheme.primary,
     borderColor: Color = MaterialTheme.colorScheme.outline,
+    clipCellContent: Boolean = true,
     onCellClick: ((row: Int, column: Int) -> Unit)? = null,
     cellContent: @Composable BoxScope.(row: Int, column: Int) -> Unit = { _, _ -> },
 ) {
@@ -43,7 +44,9 @@ fun AppChessBoard(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight()
-                            .clipToBounds()
+                            .then(
+                                if (clipCellContent) Modifier.clipToBounds() else Modifier,
+                            )
                             .background(
                                 color = if ((row + column) % 2 == 0) {
                                     lightSquareColor
