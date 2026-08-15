@@ -24,7 +24,10 @@ class LeaderBoardUiStateMapper {
                             GameResultUiState(
                                 uuid = result.uuid,
                                 rank = index + 1,
-                                formattedTimeSpent = formatElapsedTime(result.timeSpentMillis),
+                                formattedTimeSpent = formatElapsedTime(
+                                    timeSpentMillis = result.timeSpentMillis,
+                                    includeMilliseconds = true,
+                                ),
                                 formattedCompletedAt = formatFullLocalDateTime(result.createdAtMillis),
                                 queenPositions = result.queenPositions,
                             )

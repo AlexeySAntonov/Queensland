@@ -55,6 +55,20 @@ class LeaderBoardUiStateMapperTest {
         )
     }
 
+    @Test
+    fun formatsTimeSpentWithMilliseconds() {
+        val result = mapper(
+            listOf(
+                gameResult(
+                    uuid = "result",
+                    timeSpentMillis = 3_661_234L,
+                ),
+            ),
+        ).groups.single().results.single()
+
+        assertEquals("1:01:01.234", result.formattedTimeSpent)
+    }
+
     private fun gameResult(
         uuid: String,
         boardSize: Int = 4,
