@@ -11,6 +11,7 @@ class CreateGameUseCase(
     private val router: Router,
 ) {
     operator fun invoke(boardSize: Int) {
+        gameRepository.clear()
         gameRepository.updateActiveGameState { ActiveGameState(boardSize = boardSize) }
         router.openGame()
     }

@@ -16,6 +16,9 @@ internal class FakeGameRepository(
 
     val completedGames = mutableListOf<ActiveGameState>()
 
+    var clearInvocationCount = 0
+        private set
+
     override fun observeActiveGameState(): Flow<ActiveGameState?> = state
 
     override fun updateActiveGameState(
@@ -32,6 +35,7 @@ internal class FakeGameRepository(
     }
 
     override fun clear() {
+        clearInvocationCount++
         state.value = null
     }
 }
