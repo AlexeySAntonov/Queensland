@@ -5,6 +5,7 @@
     <string name="leaderboard_empty">No completed games yet</string>
     <string name="leaderboard_board_size">%1$d x %2$d board</string>
     <string name="leaderboard_solved_in">Solved in %1$s</string>
+    <string name="leaderboard_completed_at">Completed %1$s</string>
     <string name="delete_result">Delete result</string>
     <string name="navigation_close">Close</string>
 </resources>

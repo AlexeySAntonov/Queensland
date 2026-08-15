@@ -1,21 +1,34 @@
 package com.alan.queensland.leaderboard.impl.ui
 
 import com.alan.queensland.core.db.api.model.GameResultModel
+import com.alan.queensland.core.ui.base.util.formatFullLocalDateTime
 import com.alan.queensland.core.utils.time.formatElapsedTime
 import me.tatarka.inject.annotations.Inject
-import kotlin.time.Instant
 
 @Inject
 class LeaderBoardUiStateMapper {
 
     operator fun invoke(results: List<GameResultModel>) = LeaderBoardUiState(
-        results = results.map { result ->
-            GameResultUiState(
-                uuid = result.uuid,
-                boardSize = result.boardSize,
-                formattedTimeSpent = formatElapsedTime(result.timeSpentMillis),
-                completedAt = Instant.fromEpochMilliseconds(result.createdAtMillis).toString(),
-            )
-        },
+        groups = results
+            .groupBy(GameResultModel::boardSize)
+            .entries
+            .sortedBy(Map.Entry<Int, List<GameResultModel>>::key)
+            .map { (boardSize, boardResults) ->
+                LeaderBoardGroupUiState(
+                    boardSize = boardSize,
+                    results = boardResults
+                        .sortedWith(
+                            compareBy<GameResultModel>(GameResultModel::timeSpentMillis)
+                                .thenByDescending(GameResultModel::createdAtMillis),
+                        ).mapIndexed { index, result ->
+                            GameResultUiState(
+                                uuid = result.uuid,
+                                rank = index + 1,
+                                formattedTimeSpent = formatElapsedTime(result.timeSpentMillis),
+                                formattedCompletedAt = formatFullLocalDateTime(result.createdAtMillis),
+                            )
+                        },
+                )
+            },
     )
 }
