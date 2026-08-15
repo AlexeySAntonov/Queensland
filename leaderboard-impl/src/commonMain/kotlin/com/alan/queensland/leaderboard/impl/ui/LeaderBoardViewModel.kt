@@ -46,9 +46,7 @@ class LeaderBoardViewModel(
 
     fun onDeleteResultClick(uuid: String) {
         viewModelScope.launch {
-            deleteResultUseCase(uuid).onFailure {
-                // TODO show alert
-            }
+            deleteResultUseCase(uuid)
         }
     }
 

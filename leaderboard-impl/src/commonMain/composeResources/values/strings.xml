@@ -7,5 +7,9 @@
     <string name="leaderboard_solved_in">Solved in %1$s</string>
     <string name="leaderboard_completed_at">Completed %1$s</string>
     <string name="delete_result">Delete result</string>
+    <string name="delete_result_confirmation_title">Delete result?</string>
+    <string name="delete_result_confirmation_message">This result will be permanently removed.</string>
+    <string name="delete_result_confirmation_action">Delete</string>
+    <string name="dialog_cancel">Cancel</string>
     <string name="navigation_close">Close</string>
 </resources>

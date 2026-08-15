@@ -35,12 +35,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alan.queensland.core.ui.base.compose.components.AppAlertDialog
 import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
 import com.alan.queensland.core.ui.base.compose.components.AppQueen
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
@@ -49,6 +53,10 @@ import com.alan.queensland.core.ui.base.model.UiState
 import org.jetbrains.compose.resources.stringResource
 import queensland.leaderboard_impl.generated.resources.Res
 import queensland.leaderboard_impl.generated.resources.delete_result
+import queensland.leaderboard_impl.generated.resources.delete_result_confirmation_action
+import queensland.leaderboard_impl.generated.resources.delete_result_confirmation_message
+import queensland.leaderboard_impl.generated.resources.delete_result_confirmation_title
+import queensland.leaderboard_impl.generated.resources.dialog_cancel
 import queensland.leaderboard_impl.generated.resources.leaderboard_board_size
 import queensland.leaderboard_impl.generated.resources.leaderboard_completed_at
 import queensland.leaderboard_impl.generated.resources.leaderboard_empty
@@ -62,6 +70,7 @@ fun LeaderBoardScreen(
     viewModel: LeaderBoardViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var resultUuidPendingDeletion by remember(viewModel) { mutableStateOf<String?>(null) }
 
     Scaffold(
         topBar = {
@@ -81,9 +90,24 @@ fun LeaderBoardScreen(
         ) {
             LeaderBoardContent(
                 uiState = uiState,
-                onDeleteResultClick = viewModel::onDeleteResultClick,
+                onDeleteResultClick = { uuid -> resultUuidPendingDeletion = uuid },
             )
         }
+    }
+
+    resultUuidPendingDeletion?.let { uuid ->
+        AppAlertDialog(
+            title = stringResource(Res.string.delete_result_confirmation_title),
+            message = stringResource(Res.string.delete_result_confirmation_message),
+            confirmButtonText = stringResource(Res.string.delete_result_confirmation_action),
+            dismissButtonText = stringResource(Res.string.dialog_cancel),
+            confirmButtonColor = MaterialTheme.colorScheme.error,
+            onConfirmClick = {
+                resultUuidPendingDeletion = null
+                viewModel.onDeleteResultClick(uuid)
+            },
+            onDismissRequest = { resultUuidPendingDeletion = null },
+        )
     }
 }
 

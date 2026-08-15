@@ -144,9 +144,7 @@ class GameViewModel(
 
     private suspend fun onGameCompleted() {
         stopTimer()
-        completeGameUseCase().onFailure {
-            // TODO show alert with retry ::onGameCompleted
-        }
+        completeGameUseCase()
     }
 
     private companion object {

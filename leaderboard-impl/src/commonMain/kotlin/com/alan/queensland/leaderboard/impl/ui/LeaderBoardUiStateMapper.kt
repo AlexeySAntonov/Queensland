@@ -12,7 +12,7 @@ class LeaderBoardUiStateMapper {
         groups = results
             .groupBy(GameResultModel::boardSize)
             .entries
-            .sortedBy(Map.Entry<Int, List<GameResultModel>>::key)
+            .sortedByDescending(Map.Entry<Int, List<GameResultModel>>::key)
             .map { (boardSize, boardResults) ->
                 LeaderBoardGroupUiState(
                     boardSize = boardSize,

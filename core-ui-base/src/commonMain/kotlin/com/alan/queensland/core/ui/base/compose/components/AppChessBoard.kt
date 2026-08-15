@@ -14,7 +14,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -31,7 +35,18 @@ fun AppChessBoard(
     Column(
         modifier = modifier
             .aspectRatio(1f)
-            .background(borderColor)
+            .drawBehind {
+                val borderWidth = 1.dp.toPx()
+                drawRect(
+                    color = borderColor,
+                    topLeft = Offset(x = borderWidth / 2f, y = borderWidth / 2f),
+                    size = Size(
+                        width = size.width - borderWidth,
+                        height = size.height - borderWidth,
+                    ),
+                    style = Stroke(width = borderWidth),
+                )
+            }
             .padding(1.dp),
     ) {
         repeat(boardSize) { row ->

@@ -242,4 +242,4 @@ private const val CONFETTI_ROTATION_DEGREES = 720f
 private const val FULL_ROTATION_DEGREES = 360f
 private const val GOLDEN_RATIO_CONJUGATE = 0.61803395f
 private const val ROTATION_OFFSET_STEP_DEGREES = 31f
-private val CONFETTI_SWAY_RADIANS = PI * 4
+private const val CONFETTI_SWAY_RADIANS = PI * 4
