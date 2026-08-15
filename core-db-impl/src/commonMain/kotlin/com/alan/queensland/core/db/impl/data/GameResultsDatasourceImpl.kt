@@ -19,13 +19,18 @@ class GameResultsDatasourceImpl(
             .map { entities -> entities.map { entity -> entity.toModel() } }
     }
 
-    override suspend fun saveResult(boardSize: Int, timeSpentMillis: Long) {
+    override suspend fun saveResult(
+        boardSize: Int,
+        timeSpentMillis: Long,
+        queenPositions: Set<Pair<Int, Int>>,
+    ) {
         db.gameResultDao().insert(
             GameResultEntity(
                 uuid = Uuid.random().toString(),
                 timeSpentMillis = timeSpentMillis,
                 createdAtMillis = Clock.System.now().toEpochMilliseconds(),
                 boardSize = boardSize,
+                queenPositions = queenPositions.encode(),
             ),
         )
     }
@@ -39,5 +44,26 @@ class GameResultsDatasourceImpl(
         timeSpentMillis = timeSpentMillis,
         createdAtMillis = createdAtMillis,
         boardSize = boardSize,
+        queenPositions = queenPositions.decode(),
     )
+
+    private fun Set<Pair<Int, Int>>.encode(): String {
+        return joinToString(separator = QUEEN_SEPARATOR.toString()) { position ->
+            "${position.first}$COORDINATE_SEPARATOR${position.second}"
+        }
+    }
+
+    private fun String.decode(): Set<Pair<Int, Int>> {
+        if (isEmpty()) return emptySet()
+
+        return split(QUEEN_SEPARATOR).mapTo(mutableSetOf()) { position ->
+            val (row, column) = position.split(COORDINATE_SEPARATOR, limit = 2)
+            row.toInt() to column.toInt()
+        }
+    }
+
+    private companion object {
+        const val QUEEN_SEPARATOR = ','
+        const val COORDINATE_SEPARATOR = ':'
+    }
 }

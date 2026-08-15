@@ -26,6 +26,7 @@ class LeaderBoardUiStateMapper {
                                 rank = index + 1,
                                 formattedTimeSpent = formatElapsedTime(result.timeSpentMillis),
                                 formattedCompletedAt = formatFullLocalDateTime(result.createdAtMillis),
+                                queenPositions = result.queenPositions,
                             )
                         },
                 )

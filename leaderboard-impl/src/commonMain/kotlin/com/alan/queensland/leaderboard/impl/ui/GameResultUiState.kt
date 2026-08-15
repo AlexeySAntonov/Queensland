@@ -5,4 +5,5 @@ data class GameResultUiState(
     val rank: Int,
     val formattedTimeSpent: String,
     val formattedCompletedAt: String,
+    val queenPositions: Set<Pair<Int, Int>>,
 )

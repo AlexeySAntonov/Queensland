@@ -31,7 +31,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +39,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alan.queensland.core.ui.base.compose.components.AppButton
 import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
+import com.alan.queensland.core.ui.base.compose.components.AppQueen
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import com.alan.queensland.core.ui.base.model.UiState
@@ -227,16 +227,9 @@ private fun ColumnScope.QueenReserve(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         repeat(remainingQueenCount) {
-            Box(
+            AppQueen(
                 modifier = Modifier.size(width = 20.dp, height = 28.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = QUEEN_SYMBOL,
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            }
+            )
         }
     }
 }
@@ -256,31 +249,8 @@ private fun BoxScope.QueenCell(
                 .background(MaterialTheme.colorScheme.errorContainer),
         )
     }
-    Text(
-        text = QUEEN_SYMBOL,
-        modifier = Modifier.align(Alignment.Center),
-        color = queenColor(position = position, isConflicting = isConflicting),
-        style = queenTextStyle(state.boardSize),
-        maxLines = 1,
+    AppQueen(
+        modifier = Modifier.matchParentSize(),
     )
 }
-
-@Composable
-private fun queenColor(
-    position: BoardPosition,
-    isConflicting: Boolean,
-): Color = when {
-    isConflicting -> MaterialTheme.colorScheme.onErrorContainer
-    (position.row + position.column) % 2 == 0 -> MaterialTheme.colorScheme.onSurfaceVariant
-    else -> MaterialTheme.colorScheme.onPrimary
-}
-
-@Composable
-private fun queenTextStyle(boardSize: Int): TextStyle = when {
-    boardSize <= 5 -> MaterialTheme.typography.displaySmall
-    boardSize <= 8 -> MaterialTheme.typography.headlineLarge
-    else -> MaterialTheme.typography.titleLarge
-}
-
-private const val QUEEN_SYMBOL = "♛"
 private const val TIME_SEPARATOR = ':'

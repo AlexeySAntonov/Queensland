@@ -5,11 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -39,6 +42,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
+import com.alan.queensland.core.ui.base.compose.components.AppQueen
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import com.alan.queensland.core.ui.base.model.UiState
@@ -180,55 +184,71 @@ private fun GameResultRow(
         ),
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(12.dp)
+                .height(IntrinsicSize.Min),
+            verticalAlignment = Alignment.Top,
         ) {
-            RankBadge(
-                rank = result.rank,
-                accentColor = accentColor,
-            )
-            Spacer(modifier = Modifier.width(12.dp))
             AppChessBoard(
                 boardSize = boardSize,
-                modifier = Modifier.size(64.dp),
+                modifier = Modifier.size(128.dp),
                 lightSquareColor = accentColor.copy(alpha = 0.18f),
                 darkSquareColor = accentColor.copy(alpha = 0.72f),
                 borderColor = accentColor,
-            )
-            Spacer(modifier = Modifier.width(Paddings.one))
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(Paddings.half),
-            ) {
-                ResultMetadataRow(
-                    text = stringResource(
-                        Res.string.leaderboard_solved_in,
-                        result.formattedTimeSpent,
-                    ),
-                    icon = Icons.Default.CheckCircle,
-                    color = accentColor,
-                )
-                ResultMetadataRow(
-                    text = stringResource(
-                        Res.string.leaderboard_completed_at,
-                        result.formattedCompletedAt,
-                    ),
-                    icon = Icons.Default.DateRange,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            ) { row, column ->
+                if ((row to column) in result.queenPositions) {
+                    AppQueen(
+                        modifier = Modifier.matchParentSize(),
+                    )
+                }
             }
-            Spacer(modifier = Modifier.width(Paddings.half))
-            FilledTonalIconButton(
-                onClick = onDeleteClick,
-                colors = IconButtonDefaults.filledTonalIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.error,
-                ),
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
             ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = stringResource(Res.string.delete_result),
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    RankBadge(
+                        rank = result.rank,
+                        accentColor = accentColor,
+                    )
+                    FilledTonalIconButton(
+                        onClick = onDeleteClick,
+                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                            contentColor = MaterialTheme.colorScheme.error,
+                        ),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = stringResource(Res.string.delete_result),
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Column(verticalArrangement = Arrangement.spacedBy(Paddings.half)) {
+                    ResultMetadataRow(
+                        text = stringResource(
+                            Res.string.leaderboard_solved_in,
+                            result.formattedTimeSpent,
+                        ),
+                        icon = Icons.Default.CheckCircle,
+                        color = accentColor,
+                    )
+                    ResultMetadataRow(
+                        text = stringResource(
+                            Res.string.leaderboard_completed_at,
+                            result.formattedCompletedAt,
+                        ),
+                        icon = Icons.Default.DateRange,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }
@@ -240,7 +260,7 @@ private fun RankBadge(
     accentColor: Color,
 ) {
     Surface(
-        modifier = Modifier.size(44.dp),
+        modifier = Modifier.size(32.dp),
         shape = CircleShape,
         color = accentColor.copy(alpha = 0.14f),
         contentColor = accentColor,
@@ -248,7 +268,7 @@ private fun RankBadge(
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = rank.toString(),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.labelLarge,
             )
         }
     }

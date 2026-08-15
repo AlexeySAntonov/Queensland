@@ -9,14 +9,9 @@ internal class FakeGameResultsDatasource(
     initialResults: List<GameResultModel> = emptyList(),
 ) : GameResultsDatasource {
 
-    data class SavedResult(
-        val boardSize: Int,
-        val timeSpentMillis: Long,
-    )
-
     private val results = MutableStateFlow(initialResults)
 
-    val savedResults = mutableListOf<SavedResult>()
+    val savedResults = mutableListOf<SavedGameResult>()
     val deletedResultUuids = mutableListOf<String>()
 
     override fun observeResults(): Flow<List<GameResultModel>> = results
@@ -24,10 +19,12 @@ internal class FakeGameResultsDatasource(
     override suspend fun saveResult(
         boardSize: Int,
         timeSpentMillis: Long,
+        queenPositions: Set<Pair<Int, Int>>,
     ) {
-        savedResults += SavedResult(
+        savedResults += SavedGameResult(
             boardSize = boardSize,
             timeSpentMillis = timeSpentMillis,
+            queenPositions = queenPositions,
         )
     }
 

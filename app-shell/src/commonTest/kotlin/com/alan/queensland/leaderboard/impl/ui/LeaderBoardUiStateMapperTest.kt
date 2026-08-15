@@ -35,15 +35,37 @@ class LeaderBoardUiStateMapperTest {
         assertEquals(listOf("newer", "older"), state.groups.single().results.map(GameResultUiState::uuid))
     }
 
+    @Test
+    fun mapsQueenPositions() {
+        val queenPositions = setOf(
+            0 to 1,
+            1 to 3,
+        )
+
+        val result = mapper(
+            listOf(gameResult(uuid = "result", queenPositions = queenPositions)),
+        ).groups.single().results.single()
+
+        assertEquals(
+            setOf(
+                0 to 1,
+                1 to 3,
+            ),
+            result.queenPositions,
+        )
+    }
+
     private fun gameResult(
         uuid: String,
         boardSize: Int = 4,
         timeSpentMillis: Long = 1_000,
         createdAtMillis: Long = 0,
+        queenPositions: Set<Pair<Int, Int>> = emptySet(),
     ) = GameResultModel(
         uuid = uuid,
         boardSize = boardSize,
         timeSpentMillis = timeSpentMillis,
         createdAtMillis = createdAtMillis,
+        queenPositions = queenPositions,
     )
 }

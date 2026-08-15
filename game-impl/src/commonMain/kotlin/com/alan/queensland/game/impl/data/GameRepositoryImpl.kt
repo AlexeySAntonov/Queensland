@@ -29,6 +29,9 @@ class GameRepositoryImpl(
         gameResultsDatasource.saveResult(
             boardSize = completedGame.boardSize,
             timeSpentMillis = completedGame.timeSpentMillis,
+            queenPositions = completedGame.queenPositions.mapTo(mutableSetOf()) { position ->
+                position.row to position.column
+            },
         )
         activeGameState.value = null
         return true

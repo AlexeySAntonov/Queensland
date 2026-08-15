@@ -5,4 +5,5 @@ data class GameResultModel(
     val timeSpentMillis: Long,
     val createdAtMillis: Long,
     val boardSize: Int,
+    val queenPositions: Set<Pair<Int, Int>>,
 )

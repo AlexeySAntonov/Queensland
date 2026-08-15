@@ -9,4 +9,5 @@ data class GameResultEntity(
     val timeSpentMillis: Long,
     val createdAtMillis: Long,
     val boardSize: Int,
+    val queenPositions: String,
 )

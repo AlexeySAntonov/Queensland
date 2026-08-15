@@ -18,6 +18,7 @@ class LeaderBoardUseCasesTest {
             timeSpentMillis = 2_000L,
             createdAtMillis = 3_000L,
             boardSize = 4,
+            queenPositions = emptySet(),
         )
         val datasource = FakeGameResultsDatasource(initialResults = listOf(result))
         val repository = LeaderBoardRepository(datasource)

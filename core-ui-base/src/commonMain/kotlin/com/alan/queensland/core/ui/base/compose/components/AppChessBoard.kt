@@ -50,7 +50,8 @@ fun AppChessBoard(
                                 } else {
                                     darkSquareColor
                                 },
-                            ).then(
+                            )
+                            .then(
                                 if (onCellClick != null) {
                                     Modifier.clickable {
                                         onCellClick(row, column)
