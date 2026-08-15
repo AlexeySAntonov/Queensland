@@ -18,9 +18,11 @@ class LeaderBoardUiStateMapperTest {
             ),
         )
 
-        assertEquals(listOf(4, 5), state.groups.map(LeaderBoardGroupUiState::boardSize))
-        assertEquals(listOf("fast-4", "slow-4"), state.groups.first().results.map(GameResultUiState::uuid))
-        assertEquals(listOf(1, 2), state.groups.first().results.map(GameResultUiState::rank))
+        val fourByFourGroup = state.groups.first { group -> group.boardSize == 4 }
+
+        assertEquals(listOf(5, 4), state.groups.map(LeaderBoardGroupUiState::boardSize))
+        assertEquals(listOf("fast-4", "slow-4"), fourByFourGroup.results.map(GameResultUiState::uuid))
+        assertEquals(listOf(1, 2), fourByFourGroup.results.map(GameResultUiState::rank))
     }
 
     @Test
