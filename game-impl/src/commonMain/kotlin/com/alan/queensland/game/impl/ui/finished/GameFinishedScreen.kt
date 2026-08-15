@@ -53,7 +53,7 @@ fun GameFinishedScreen(
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background,
+        color = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {

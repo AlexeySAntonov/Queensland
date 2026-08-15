@@ -73,6 +73,8 @@ fun LeaderBoardScreen(
     var resultUuidPendingDeletion by remember(viewModel) { mutableStateOf<String?>(null) }
 
     Scaffold(
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             AppToolbar(
                 title = stringResource(Res.string.leaderboard_title),
