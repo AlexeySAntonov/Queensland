@@ -28,6 +28,7 @@ import queensland.game_impl.generated.resources.ic_exhaust_v2
 @Composable
 internal fun BoxScope.LandingQueen(
     isPlaced: Boolean,
+    clipExhaustToCellBounds: Boolean,
 ) {
     var wasPlaced by remember { mutableStateOf(isPlaced) }
     var isLanding by remember { mutableStateOf(false) }
@@ -67,7 +68,9 @@ internal fun BoxScope.LandingQueen(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .clipToBounds()
+                .then(
+                    if (clipExhaustToCellBounds) Modifier.clipToBounds() else Modifier,
+                )
                 .landingTranslation(landingOffset.value),
         ) {
             Image(
@@ -98,7 +101,7 @@ private fun Modifier.landingTranslation(offset: Float): Modifier = graphicsLayer
 }
 
 private const val LANDING_START_OFFSET = -1.1f
-private const val LANDING_DURATION_MILLIS = 700
+private const val LANDING_DURATION_MILLIS = 1000
 private const val EXHAUST_WIDTH_FRACTION = 0.72f
 private const val EXHAUST_ASPECT_RATIO = 866f / 899f
 private const val EXHAUST_VERTICAL_OFFSET_FRACTION = 0.63f

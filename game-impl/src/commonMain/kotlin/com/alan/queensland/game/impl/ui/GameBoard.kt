@@ -169,7 +169,10 @@ private fun BoxScope.QueenCell(
                 .background(ConflictColor.copy(alpha = CONFLICT_CELL_ALPHA)),
         )
     }
-    LandingQueen(isPlaced = isPlaced)
+    LandingQueen(
+        isPlaced = isPlaced,
+        clipExhaustToCellBounds = position.row == state.boardSize - 1,
+    )
 }
 
 private val ConflictColor = Color(0xFFFF1744)
