@@ -2,6 +2,7 @@ package com.alan.queensland.core.ui.base.compose.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -25,8 +26,16 @@ import androidx.compose.ui.unit.dp
 fun AppChessBoard(
     boardSize: Int,
     modifier: Modifier = Modifier,
-    lightSquareColor: Color = MaterialTheme.colorScheme.surfaceVariant,
-    darkSquareColor: Color = MaterialTheme.colorScheme.primary,
+    lightSquareColor: Color = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant
+    },
+    darkSquareColor: Color = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.surfaceVariant
+    } else {
+        MaterialTheme.colorScheme.primary
+    },
     borderColor: Color = MaterialTheme.colorScheme.outline,
     clipCellContent: Boolean = true,
     onCellClick: ((row: Int, column: Int) -> Unit)? = null,
