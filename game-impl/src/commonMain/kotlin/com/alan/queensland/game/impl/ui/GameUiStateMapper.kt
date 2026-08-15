@@ -16,6 +16,7 @@ class GameUiStateMapper {
         boardSize = state.boardSize,
         queenPositions = state.queenPositions,
         conflictingPositions = validation.conflictingPositions,
+        conflictingPairs = validation.conflictingPairs,
         remainingQueenCount = state.boardSize - state.queenPositions.size,
         formattedTimeSpent = formatElapsedTime(
             state.timeSpentMillis + currentSessionElapsedMillis,

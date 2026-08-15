@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -38,12 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alan.queensland.core.ui.base.compose.components.AppButton
-import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
 import com.alan.queensland.core.ui.base.compose.components.AppQueen
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import com.alan.queensland.core.ui.base.model.UiState
-import com.alan.queensland.game.api.BoardPosition
 import org.jetbrains.compose.resources.stringResource
 import queensland.game_impl.generated.resources.Res
 import queensland.game_impl.generated.resources.game_not_active
@@ -133,16 +130,10 @@ private fun GameContent(
         GameTimer(formattedTimeSpent = state.formattedTimeSpent)
         Spacer(modifier = Modifier.weight(1f))
         QueenReserve(remainingQueenCount = state.remainingQueenCount)
-        AppChessBoard(
-            boardSize = state.boardSize,
-            modifier = Modifier.fillMaxWidth(),
+        GameBoard(
+            state = state,
             onCellClick = onCellClick,
-        ) { row, column ->
-            QueenCell(
-                position = BoardPosition(row = row, column = column),
-                state = state,
-            )
-        }
+        )
         Spacer(modifier = Modifier.weight(1f))
         AppButton(
             text = stringResource(Res.string.reset_game),
@@ -234,23 +225,4 @@ private fun ColumnScope.QueenReserve(
     }
 }
 
-@Composable
-private fun BoxScope.QueenCell(
-    position: BoardPosition,
-    state: GameUiState,
-) {
-    if (position !in state.queenPositions) return
-
-    val isConflicting = position in state.conflictingPositions
-    if (isConflicting) {
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .background(MaterialTheme.colorScheme.errorContainer),
-        )
-    }
-    AppQueen(
-        modifier = Modifier.matchParentSize(),
-    )
-}
 private const val TIME_SEPARATOR = ':'

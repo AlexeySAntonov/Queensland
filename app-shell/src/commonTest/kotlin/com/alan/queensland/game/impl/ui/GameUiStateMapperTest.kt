@@ -14,11 +14,14 @@ class GameUiStateMapperTest {
 
     @Test
     fun mapsBoardStateAndCurrentSessionTime() {
+        val firstQueen = BoardPosition(row = 0, column = 0)
+        val secondQueen = BoardPosition(row = 1, column = 2)
         val queenPositions = setOf(
-            BoardPosition(row = 0, column = 0),
-            BoardPosition(row = 1, column = 2),
+            firstQueen,
+            secondQueen,
         )
-        val conflictingPositions = setOf(BoardPosition(row = 0, column = 0))
+        val conflictingPositions = setOf(firstQueen, secondQueen)
+        val conflictingPairs = setOf(firstQueen to secondQueen)
 
         val result = mapper(
             state = ActiveGameState(
@@ -28,6 +31,7 @@ class GameUiStateMapperTest {
             ),
             validation = QueenPlacementValidationResult(
                 conflictingPositions = conflictingPositions,
+                conflictingPairs = conflictingPairs,
                 isSolved = false,
             ),
             currentSessionElapsedMillis = 750L,
@@ -36,6 +40,7 @@ class GameUiStateMapperTest {
         assertEquals(4, result.boardSize)
         assertEquals(queenPositions, result.queenPositions)
         assertEquals(conflictingPositions, result.conflictingPositions)
+        assertEquals(conflictingPairs, result.conflictingPairs)
         assertEquals(2, result.remainingQueenCount)
         assertEquals("00:02", result.formattedTimeSpent)
         assertFalse(result.isSolved)
@@ -50,6 +55,7 @@ class GameUiStateMapperTest {
             ),
             validation = QueenPlacementValidationResult(
                 conflictingPositions = emptySet(),
+                conflictingPairs = emptySet(),
                 isSolved = true,
             ),
             currentSessionElapsedMillis = 61_000L,

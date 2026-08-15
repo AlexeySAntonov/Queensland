@@ -25,7 +25,30 @@ class ValidateQueenPlacementUseCaseTest {
         val result = validateQueenPlacementUseCase(state)
 
         assertTrue(result.conflictingPositions.isEmpty())
+        assertTrue(result.conflictingPairs.isEmpty())
         assertFalse(result.isSolved)
+    }
+
+    @Test
+    fun returnsEveryConflictingPair() {
+        val firstQueen = BoardPosition(row = 0, column = 0)
+        val rowConflict = BoardPosition(row = 0, column = 3)
+        val diagonalConflict = BoardPosition(row = 2, column = 2)
+
+        val result = validateQueenPlacementUseCase(
+            ActiveGameState(
+                boardSize = 4,
+                queenPositions = setOf(firstQueen, rowConflict, diagonalConflict),
+            ),
+        )
+
+        assertEquals(
+            setOf(
+                firstQueen to rowConflict,
+                firstQueen to diagonalConflict,
+            ),
+            result.conflictingPairs,
+        )
     }
 
     @Test
@@ -77,6 +100,7 @@ class ValidateQueenPlacementUseCaseTest {
         val result = validateQueenPlacementUseCase(state)
 
         assertTrue(result.conflictingPositions.isEmpty())
+        assertTrue(result.conflictingPairs.isEmpty())
         assertTrue(result.isSolved)
     }
 }
