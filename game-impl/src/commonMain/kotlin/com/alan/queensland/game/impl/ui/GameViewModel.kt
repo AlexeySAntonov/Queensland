@@ -159,6 +159,8 @@ class GameViewModel(
                 validation.isSolved
             }
 
+            // wait until the last queen completes its landing
+            delay(QUEEN_LANDING_DURATION_MILLIS.milliseconds)
             completeGame()
         }
     }

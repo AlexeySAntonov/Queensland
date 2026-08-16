@@ -51,7 +51,7 @@ internal fun BoxScope.LandingQueen(
                 landingOffset.animateTo(
                     targetValue = 0f,
                     animationSpec = tween(
-                        durationMillis = LANDING_DURATION_MILLIS,
+                        durationMillis = QUEEN_LANDING_DURATION_MILLIS,
                         easing = LinearOutSlowInEasing,
                     ),
                 )
@@ -100,8 +100,9 @@ private fun Modifier.landingTranslation(offset: Float): Modifier = graphicsLayer
     translationY = offset * size.height
 }
 
+internal const val QUEEN_LANDING_DURATION_MILLIS = 1_000
+
 private const val LANDING_START_OFFSET = -1.1f
-private const val LANDING_DURATION_MILLIS = 1000
 private const val EXHAUST_WIDTH_FRACTION = 0.72f
 private const val EXHAUST_ASPECT_RATIO = 866f / 899f
 private const val EXHAUST_VERTICAL_OFFSET_FRACTION = 0.63f

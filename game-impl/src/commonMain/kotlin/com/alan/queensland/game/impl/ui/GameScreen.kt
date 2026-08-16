@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -87,28 +88,34 @@ private fun GamePhoneScreen(
         onPauseOrDispose { viewModel.onScreenPaused() }
     }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onBackground,
-        topBar = {
-            AppToolbar(
-                title = stringResource(Res.string.game_screen_title),
-                navigationIcon = Icons.AutoMirrored.Rounded.ArrowBack,
-                navigationIconContentDescription = stringResource(Res.string.navigation_back),
-                onNavigationClick = viewModel::onBackClick,
-            )
-        },
-    ) { contentPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding),
-        ) {
-            GameUiStateContent(
-                uiState = uiState,
-                onCellClick = viewModel::onCellClick,
-                onResetGameClick = viewModel::onResetGameClick,
-            )
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onBackground,
+            topBar = {
+                AppToolbar(
+                    title = stringResource(Res.string.game_screen_title),
+                    navigationIcon = Icons.AutoMirrored.Rounded.ArrowBack,
+                    navigationIconContentDescription = stringResource(Res.string.navigation_back),
+                    onNavigationClick = viewModel::onBackClick,
+                )
+            },
+        ) { contentPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+            ) {
+                GameUiStateContent(
+                    uiState = uiState,
+                    onCellClick = viewModel::onCellClick,
+                    onResetGameClick = viewModel::onResetGameClick,
+                )
+            }
+        }
+
+        if ((uiState as? UiState.Data)?.value?.isSolved == true) {
+            GameCompletionOverlay()
         }
     }
 
@@ -124,6 +131,21 @@ private fun GamePhoneScreen(
             onDismissRequest = {},
         )
     }
+}
+
+@Composable
+private fun GameCompletionOverlay() {
+    Spacer(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                awaitPointerEventScope {
+                    while (true) {
+                        awaitPointerEvent().changes.forEach { change -> change.consume() }
+                    }
+                }
+            },
+    )
 }
 
 @Composable
