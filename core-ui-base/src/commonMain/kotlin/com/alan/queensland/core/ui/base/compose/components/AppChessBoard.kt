@@ -20,6 +20,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -39,6 +41,8 @@ fun AppChessBoard(
     borderColor: Color = MaterialTheme.colorScheme.outline,
     clipCellContent: Boolean = true,
     onCellClick: ((row: Int, column: Int) -> Unit)? = null,
+    cellContentDescription: (@Composable (row: Int, column: Int) -> String)? = null,
+    cellClickLabel: (@Composable (row: Int, column: Int) -> String)? = null,
     cellContent: @Composable BoxScope.(row: Int, column: Int) -> Unit = { _, _ -> },
 ) {
     Column(
@@ -65,6 +69,9 @@ fun AppChessBoard(
                     .fillMaxWidth(),
             ) {
                 repeat(boardSize) { column ->
+                    val contentDescription = cellContentDescription?.invoke(row, column)
+                    val clickLabel = cellClickLabel?.invoke(row, column)
+
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -81,8 +88,16 @@ fun AppChessBoard(
                             )
                             .then(
                                 if (onCellClick != null) {
-                                    Modifier.clickable {
-                                        onCellClick(row, column)
+                                    Modifier.clickable(
+                                        onClickLabel = clickLabel,
+                                        onClick = { onCellClick(row, column) },
+                                    )
+                                } else Modifier
+                            )
+                            .then(
+                                if (contentDescription != null) {
+                                    Modifier.semantics(mergeDescendants = true) {
+                                        this.contentDescription = contentDescription
                                     }
                                 } else Modifier
                             )

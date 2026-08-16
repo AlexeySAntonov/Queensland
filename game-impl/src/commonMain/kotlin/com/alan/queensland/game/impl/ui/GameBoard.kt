@@ -16,6 +16,13 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.dp
 import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
 import com.alan.queensland.game.api.BoardPosition
+import org.jetbrains.compose.resources.stringResource
+import queensland.game_impl.generated.resources.Res
+import queensland.game_impl.generated.resources.game_board_cell_conflicting_queen
+import queensland.game_impl.generated.resources.game_board_cell_empty
+import queensland.game_impl.generated.resources.game_board_cell_queen
+import queensland.game_impl.generated.resources.place_queen
+import queensland.game_impl.generated.resources.remove_queen
 import kotlin.math.sqrt
 
 @Composable
@@ -33,6 +40,22 @@ internal fun GameBoard(
             modifier = Modifier.fillMaxSize(),
             clipCellContent = false,
             onCellClick = onCellClick,
+            cellContentDescription = { row, column ->
+                gameCellContentDescription(
+                    position = BoardPosition(row = row, column = column),
+                    state = state,
+                )
+            },
+            cellClickLabel = { row, column ->
+                val position = BoardPosition(row = row, column = column)
+                stringResource(
+                    if (position in state.queenPositions) {
+                        Res.string.remove_queen
+                    } else {
+                        Res.string.place_queen
+                    },
+                )
+            },
         ) { row, column ->
             QueenCell(
                 position = BoardPosition(row = row, column = column),
@@ -44,6 +67,19 @@ internal fun GameBoard(
             conflictingPairs = state.conflictingPairs,
         )
     }
+}
+
+@Composable
+private fun gameCellContentDescription(
+    position: BoardPosition,
+    state: GameUiState,
+): String {
+    val descriptionResource = when (position) {
+        in state.conflictingPositions -> Res.string.game_board_cell_conflicting_queen
+        in state.queenPositions -> Res.string.game_board_cell_queen
+        else -> Res.string.game_board_cell_empty
+    }
+    return stringResource(descriptionResource, position.row + 1, position.column + 1)
 }
 
 @Composable

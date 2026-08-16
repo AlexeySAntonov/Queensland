@@ -21,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alan.queensland.core.ui.base.FormFactor
@@ -31,8 +33,11 @@ import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import com.alan.queensland.game.api.GameBoardSize
 import org.jetbrains.compose.resources.stringResource
 import queensland.game_impl.generated.resources.Res
+import queensland.game_impl.generated.resources.board_size_decrease
 import queensland.game_impl.generated.resources.board_size_decrease_symbol
+import queensland.game_impl.generated.resources.board_size_increase
 import queensland.game_impl.generated.resources.board_size_increase_symbol
+import queensland.game_impl.generated.resources.board_size_selected
 import queensland.game_impl.generated.resources.game_configuration_title
 import queensland.game_impl.generated.resources.navigation_back
 import queensland.game_impl.generated.resources.start_game
@@ -109,6 +114,10 @@ private fun BoardSizeSelector(
     onDecreaseClick: () -> Unit,
     onIncreaseClick: () -> Unit,
 ) {
+    val decreaseBoardSizeDescription = stringResource(Res.string.board_size_decrease)
+    val increaseBoardSizeDescription = stringResource(Res.string.board_size_increase)
+    val selectedBoardSizeDescription = stringResource(Res.string.board_size_selected, boardSize)
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -120,11 +129,18 @@ private fun BoardSizeSelector(
         ) {
             Text(
                 text = stringResource(Res.string.board_size_decrease_symbol),
+                modifier = Modifier.clearAndSetSemantics {
+                    contentDescription = decreaseBoardSizeDescription
+                },
                 style = MaterialTheme.typography.headlineMedium,
             )
         }
         Box(
-            modifier = Modifier.size(64.dp),
+            modifier = Modifier
+                .size(64.dp)
+                .clearAndSetSemantics {
+                    contentDescription = selectedBoardSizeDescription
+                },
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -139,6 +155,9 @@ private fun BoardSizeSelector(
         ) {
             Text(
                 text = stringResource(Res.string.board_size_increase_symbol),
+                modifier = Modifier.clearAndSetSemantics {
+                    contentDescription = increaseBoardSizeDescription
+                },
                 style = MaterialTheme.typography.headlineMedium,
             )
         }

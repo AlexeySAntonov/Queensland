@@ -5,8 +5,16 @@
     <string name="reset_game">Reset game</string>
     <string name="game_configuration_title">Game configuration</string>
     <string name="start_game">Start game</string>
+    <string name="board_size_decrease">Decrease board size</string>
     <string name="board_size_decrease_symbol">-</string>
+    <string name="board_size_increase">Increase board size</string>
     <string name="board_size_increase_symbol">+</string>
+    <string name="board_size_selected">Selected board size: %1$d</string>
+    <string name="game_board_cell_empty">Row %1$d, column %2$d, empty</string>
+    <string name="game_board_cell_queen">Row %1$d, column %2$d, queen</string>
+    <string name="game_board_cell_conflicting_queen">Row %1$d, column %2$d, queen in conflict</string>
+    <string name="place_queen">Place queen</string>
+    <string name="remove_queen">Remove queen</string>
     <string name="game_finished_title">Puzzle solved!</string>
     <string name="game_finished_message">Every queen is safe.</string>
     <string name="game_result_save_error_title">Unable to save result</string>
