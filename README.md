@@ -6,6 +6,11 @@
 
 Queensland is a Compose Multiplatform implementation of the N-Queens puzzle for Android and iOS. A player selects a board size, places queens with real-time conflict validation, and can review persisted results on the leaderboard.
 
+## Demo videos
+
+ - [▶ Portrait](https://drive.google.com/file/d/1gM5VnV1Lt0ssQvdivKB6DwJfAn_NmqJI/view)
+ - [▶ Landscape](https://drive.google.com/file/d/1oRYq-Z1bH6a5pZQ259_cqWsC-8q6G5lz/view)
+
 ## Requirements
 
 | Tool | Requirement |
