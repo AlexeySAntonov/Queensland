@@ -159,6 +159,9 @@ class GameViewModel(
                 validation.isSolved
             }
 
+            // to exclude QUEEN_LANDING_DURATION_MILLIS from result time spent
+            stopTimer()
+
             // wait until the last queen completes its landing
             delay(QUEEN_LANDING_DURATION_MILLIS.milliseconds)
             completeGame()
@@ -166,7 +169,6 @@ class GameViewModel(
     }
 
     private suspend fun completeGame() {
-        stopTimer()
         completeGameUseCase().onFailure {
             _showCompletionFailureDialogFlow.value = true
         }
