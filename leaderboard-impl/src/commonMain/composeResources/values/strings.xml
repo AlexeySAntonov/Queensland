@@ -10,6 +10,9 @@
     <string name="delete_result_confirmation_title">Delete result?</string>
     <string name="delete_result_confirmation_message">This result will be permanently removed.</string>
     <string name="delete_result_confirmation_action">Delete</string>
+    <string name="delete_result_failure_title">Unable to delete result</string>
+    <string name="delete_result_failure_message">The result could not be deleted. Retry the operation.</string>
+    <string name="delete_result_failure_retry">Retry</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="navigation_close">Close</string>
 </resources>

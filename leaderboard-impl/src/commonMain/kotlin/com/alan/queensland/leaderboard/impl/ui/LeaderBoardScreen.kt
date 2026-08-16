@@ -56,6 +56,9 @@ import queensland.leaderboard_impl.generated.resources.delete_result
 import queensland.leaderboard_impl.generated.resources.delete_result_confirmation_action
 import queensland.leaderboard_impl.generated.resources.delete_result_confirmation_message
 import queensland.leaderboard_impl.generated.resources.delete_result_confirmation_title
+import queensland.leaderboard_impl.generated.resources.delete_result_failure_message
+import queensland.leaderboard_impl.generated.resources.delete_result_failure_retry
+import queensland.leaderboard_impl.generated.resources.delete_result_failure_title
 import queensland.leaderboard_impl.generated.resources.dialog_cancel
 import queensland.leaderboard_impl.generated.resources.leaderboard_board_size
 import queensland.leaderboard_impl.generated.resources.leaderboard_completed_at
@@ -70,6 +73,7 @@ fun LeaderBoardScreen(
     viewModel: LeaderBoardViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val showDeletionFailureDialog by viewModel.showDeletionFailureDialogFlow.collectAsStateWithLifecycle()
     var resultUuidPendingDeletion by remember(viewModel) { mutableStateOf<String?>(null) }
 
     Scaffold(
@@ -109,6 +113,18 @@ fun LeaderBoardScreen(
                 viewModel.onDeleteResultClick(uuid)
             },
             onDismissRequest = { resultUuidPendingDeletion = null },
+        )
+    }
+
+    if (showDeletionFailureDialog) {
+        AppAlertDialog(
+            title = stringResource(Res.string.delete_result_failure_title),
+            message = stringResource(Res.string.delete_result_failure_message),
+            confirmButtonText = stringResource(Res.string.delete_result_failure_retry),
+            dismissButtonText = stringResource(Res.string.dialog_cancel),
+            onConfirmClick = viewModel::onDeleteResultRetryClick,
+            onDismissClick = viewModel::onDeleteResultFailureDismissClick,
+            onDismissRequest = viewModel::onDeleteResultFailureDismissClick,
         )
     }
 }

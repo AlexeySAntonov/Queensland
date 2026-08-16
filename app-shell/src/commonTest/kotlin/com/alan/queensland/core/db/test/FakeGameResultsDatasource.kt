@@ -14,6 +14,7 @@ internal class FakeGameResultsDatasource(
     val savedResults = mutableListOf<SavedGameResult>()
     val deletedResultUuids = mutableListOf<String>()
     var saveResultFailure: Throwable? = null
+    var deleteResultFailure: Throwable? = null
 
     override fun observeResults(): Flow<List<GameResultModel>> = results
 
@@ -31,6 +32,7 @@ internal class FakeGameResultsDatasource(
     }
 
     override suspend fun deleteResult(uuid: String) {
+        deleteResultFailure?.let { throwable -> throw throwable }
         deletedResultUuids += uuid
         results.value = results.value.filterNot { result -> result.uuid == uuid }
     }

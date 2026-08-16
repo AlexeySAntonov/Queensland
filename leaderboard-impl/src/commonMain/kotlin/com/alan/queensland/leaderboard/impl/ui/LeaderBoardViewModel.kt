@@ -8,7 +8,9 @@ import com.alan.queensland.leaderboard.impl.business.DeleteResultUseCase
 import com.alan.queensland.leaderboard.impl.business.ObserveLeaderBoardUseCase
 import com.alan.queensland.leaderboard.impl.di.LeaderBoardComponentHolder
 import com.alan.queensland.navigation.api.Router
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -24,6 +26,11 @@ class LeaderBoardViewModel(
     private val deleteResultUseCase: DeleteResultUseCase,
     private val router: Router,
 ) : BaseViewModel() {
+
+    private var failedDeletionUuid: String? = null
+
+    private val _showDeletionFailureDialogFlow = MutableStateFlow(false)
+    val showDeletionFailureDialogFlow = _showDeletionFailureDialogFlow.asStateFlow()
 
     val uiState = observeLeaderBoardUseCase()
         .map { results -> UiState.Data(uiStateMapper(results)) }
@@ -45,8 +52,31 @@ class LeaderBoardViewModel(
     }
 
     fun onDeleteResultClick(uuid: String) {
+        deleteResult(uuid)
+    }
+
+    fun onDeleteResultRetryClick() {
+        val uuid = failedDeletionUuid ?: return
+
+        _showDeletionFailureDialogFlow.value = false
+        deleteResult(uuid)
+    }
+
+    fun onDeleteResultFailureDismissClick() {
+        failedDeletionUuid = null
+        _showDeletionFailureDialogFlow.value = false
+    }
+
+    private fun deleteResult(uuid: String) {
         viewModelScope.launch {
             deleteResultUseCase(uuid)
+                .onSuccess {
+                    failedDeletionUuid = null
+                    _showDeletionFailureDialogFlow.value = false
+                }.onFailure {
+                    failedDeletionUuid = uuid
+                    _showDeletionFailureDialogFlow.value = true
+                }
         }
     }
 
