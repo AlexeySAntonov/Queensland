@@ -1,6 +1,7 @@
 package com.alan.queensland.game.impl.business
 
 import com.alan.queensland.game.api.ActiveGameState
+import com.alan.queensland.game.api.BoardPosition
 import com.alan.queensland.game.test.FakeGameRepository
 import com.alan.queensland.navigation.api.NavigationEvent
 import com.alan.queensland.navigation.test.FakeRouter
@@ -17,6 +18,14 @@ class CompleteGameUseCaseTest {
     fun savesResultClearsGameAndOpensFinishedScreen() = runTest {
         val gameState = ActiveGameState(
             boardSize = 6,
+            queenPositions = setOf(
+                BoardPosition(row = 0, column = 1),
+                BoardPosition(row = 1, column = 3),
+                BoardPosition(row = 2, column = 5),
+                BoardPosition(row = 3, column = 0),
+                BoardPosition(row = 4, column = 2),
+                BoardPosition(row = 5, column = 4),
+            ),
             timeSpentMillis = 12_345L,
         )
         val repository = FakeGameRepository(gameState)

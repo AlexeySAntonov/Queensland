@@ -26,7 +26,7 @@ import com.alan.queensland.core.ui.base.compose.components.AppButton
 import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
-import com.alan.queensland.core.ui.base.util.GameBoardSize
+import com.alan.queensland.game.api.GameBoardSize
 import org.jetbrains.compose.resources.stringResource
 import queensland.game_impl.generated.resources.Res
 import queensland.game_impl.generated.resources.board_size_decrease_symbol

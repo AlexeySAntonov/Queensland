@@ -16,7 +16,7 @@ class CompleteGameUseCase(
 
     suspend operator fun invoke(): Result<Unit> =
         resultOf {
-            check(gameRepository.completeActiveGame())
+            check(gameRepository.completeActiveGame()) { "No active game to complete" }
             router.openGameFinished()
         }.onFailure { throwable ->
             logger.e(throwable) { "Failed to complete game" }
