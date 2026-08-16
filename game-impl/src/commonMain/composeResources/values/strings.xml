@@ -9,6 +9,9 @@
     <string name="board_size_increase_symbol">+</string>
     <string name="game_finished_title">Puzzle solved!</string>
     <string name="game_finished_message">Every queen is safe.</string>
+    <string name="game_result_save_error_title">Unable to save result</string>
+    <string name="game_result_save_error_message">Your solved puzzle is still available. Retry saving the result.</string>
+    <string name="game_result_save_retry">Retry</string>
     <string name="navigation_back">Back</string>
     <string name="navigation_close">Close</string>
 </resources>

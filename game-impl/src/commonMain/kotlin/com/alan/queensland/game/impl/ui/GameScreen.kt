@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alan.queensland.core.ui.base.compose.components.AppAlertDialog
 import com.alan.queensland.core.ui.base.compose.components.AppButton
 import com.alan.queensland.core.ui.base.compose.components.AppQueen
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
@@ -45,6 +46,9 @@ import com.alan.queensland.core.ui.base.model.UiState
 import org.jetbrains.compose.resources.stringResource
 import queensland.game_impl.generated.resources.Res
 import queensland.game_impl.generated.resources.game_not_active
+import queensland.game_impl.generated.resources.game_result_save_error_message
+import queensland.game_impl.generated.resources.game_result_save_error_title
+import queensland.game_impl.generated.resources.game_result_save_retry
 import queensland.game_impl.generated.resources.game_screen_title
 import queensland.game_impl.generated.resources.navigation_back
 import queensland.game_impl.generated.resources.reset_game
@@ -54,6 +58,7 @@ fun GameScreen(
     viewModel: GameViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val showCompletionFailureDialog by viewModel.showCompletionFailureDialogFlow.collectAsStateWithLifecycle()
 
     LifecycleResumeEffect(viewModel) {
         viewModel.onScreenResumed()
@@ -83,6 +88,16 @@ fun GameScreen(
                 onResetGameClick = viewModel::onResetGameClick,
             )
         }
+    }
+
+    if (showCompletionFailureDialog) {
+        AppAlertDialog(
+            title = stringResource(Res.string.game_result_save_error_title),
+            message = stringResource(Res.string.game_result_save_error_message),
+            confirmButtonText = stringResource(Res.string.game_result_save_retry),
+            onConfirmClick = viewModel::onGameCompletionRetryClick,
+            onDismissRequest = {},
+        )
     }
 }
 
@@ -195,7 +210,7 @@ private fun AnimatedTimerDigit(
         modifier = Modifier.width(32.dp),
         transitionSpec = {
             (slideInVertically { height -> height / 2 } + fadeIn()) togetherWith
-                (slideOutVertically { height -> -height / 2 } + fadeOut())
+                    (slideOutVertically { height -> -height / 2 } + fadeOut())
         },
         contentAlignment = Alignment.Center,
         label = "Game timer digit $index",

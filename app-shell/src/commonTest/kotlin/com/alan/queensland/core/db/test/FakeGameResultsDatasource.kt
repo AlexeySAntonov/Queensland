@@ -13,6 +13,7 @@ internal class FakeGameResultsDatasource(
 
     val savedResults = mutableListOf<SavedGameResult>()
     val deletedResultUuids = mutableListOf<String>()
+    var saveResultFailure: Throwable? = null
 
     override fun observeResults(): Flow<List<GameResultModel>> = results
 
@@ -21,6 +22,7 @@ internal class FakeGameResultsDatasource(
         timeSpentMillis: Long,
         queenPositions: Set<Pair<Int, Int>>,
     ) {
+        saveResultFailure?.let { throwable -> throw throwable }
         savedResults += SavedGameResult(
             boardSize = boardSize,
             timeSpentMillis = timeSpentMillis,

@@ -7,6 +7,7 @@ import com.alan.queensland.navigation.test.FakeRouter
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -33,7 +34,7 @@ class CompleteGameUseCaseTest {
     }
 
     @Test
-    fun doesNothingWhenThereIsNoActiveGame() = runTest {
+    fun failsWhenThereIsNoActiveGame() = runTest {
         val repository = FakeGameRepository()
         val router = FakeRouter()
 
@@ -42,7 +43,7 @@ class CompleteGameUseCaseTest {
             router = router,
         )()
 
-        assertTrue(result.isSuccess)
+        assertIs<IllegalStateException>(result.exceptionOrNull())
         assertEquals(emptyList<ActiveGameState>(), repository.completedGames)
         assertEquals(emptyList<NavigationEvent>(), router.sentEvents)
     }

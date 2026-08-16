@@ -33,7 +33,8 @@ class GameRepositoryImpl(
                 position.row to position.column
             },
         )
-        activeGameState.value = null
+
+        clear()
         return true
     }
 

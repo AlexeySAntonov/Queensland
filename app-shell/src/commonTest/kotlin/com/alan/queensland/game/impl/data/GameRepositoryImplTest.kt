@@ -9,6 +9,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -57,6 +58,32 @@ class GameRepositoryImplTest {
 
         assertFalse(repository.completeActiveGame())
 
+        assertEquals(emptyList<SavedGameResult>(), datasource.savedResults)
+    }
+
+    @Test
+    fun failedResultSaveKeepsActiveGame() = runTest {
+        val failure = IllegalStateException("Database unavailable")
+        val datasource = FakeGameResultsDatasource().apply {
+            saveResultFailure = failure
+        }
+        val repository = GameRepositoryImpl(datasource)
+        val activeGame = ActiveGameState(
+            boardSize = 4,
+            queenPositions = setOf(
+                BoardPosition(row = 0, column = 1),
+                BoardPosition(row = 1, column = 3),
+                BoardPosition(row = 2, column = 0),
+                BoardPosition(row = 3, column = 2),
+            ),
+            timeSpentMillis = 98_765L,
+        )
+        repository.updateActiveGameState { activeGame }
+
+        val result = runCatching { repository.completeActiveGame() }
+
+        assertIs<IllegalStateException>(result.exceptionOrNull())
+        assertEquals(activeGame, repository.observeActiveGameState().first())
         assertEquals(emptyList<SavedGameResult>(), datasource.savedResults)
     }
 }

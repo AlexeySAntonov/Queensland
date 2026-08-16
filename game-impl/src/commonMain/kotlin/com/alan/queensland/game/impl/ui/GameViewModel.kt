@@ -16,6 +16,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
@@ -47,6 +48,9 @@ class GameViewModel(
     private var timerJob: Job? = null
     private var timerStartedAt: TimeMark? = null
     private val currentSessionElapsedMillis = MutableStateFlow(0L)
+
+    private val _showCompletionFailureDialogFlow = MutableStateFlow(false)
+    val showCompletionFailureDialogFlow = _showCompletionFailureDialogFlow.asStateFlow()
 
     private val validatedGameState = observeActiveGameStateUseCase()
         .filterNotNull()
@@ -106,6 +110,13 @@ class GameViewModel(
         resetGameUseCase()
     }
 
+    fun onGameCompletionRetryClick() {
+        _showCompletionFailureDialogFlow.value = false
+        viewModelScope.launch {
+            completeGame()
+        }
+    }
+
     private fun resumeTimer() {
         if (timerJob?.isActive == true) return
 
@@ -141,13 +152,15 @@ class GameViewModel(
                 validation.isSolved
             }
 
-            onGameCompleted()
+            completeGame()
         }
     }
 
-    private suspend fun onGameCompleted() {
+    private suspend fun completeGame() {
         stopTimer()
-        completeGameUseCase()
+        completeGameUseCase().onFailure {
+            _showCompletionFailureDialogFlow.value = true
+        }
     }
 
     private companion object {
