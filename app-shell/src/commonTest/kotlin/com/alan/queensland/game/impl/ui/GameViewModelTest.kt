@@ -5,6 +5,7 @@ import com.alan.queensland.core.db.test.FakeGameResultsDatasource
 import com.alan.queensland.core.utils.flow.CoroutineDispatchers
 import com.alan.queensland.game.api.ActiveGameState
 import com.alan.queensland.game.api.BoardPosition
+import com.alan.queensland.game.impl.business.AbandonGameUseCase
 import com.alan.queensland.game.impl.business.AddElapsedGameTimeUseCase
 import com.alan.queensland.game.impl.business.CompleteGameUseCase
 import com.alan.queensland.game.impl.business.ObserveActiveGameStateUseCase
@@ -53,6 +54,7 @@ class GameViewModelTest {
                 gameUiStateMapper = GameUiStateMapper(),
                 validateQueenPlacementUseCase = ValidateQueenPlacementUseCase(),
                 observeActiveGameStateUseCase = ObserveActiveGameStateUseCase(repository),
+                abandonGameUseCase = AbandonGameUseCase(repository, router),
                 addElapsedGameTimeUseCase = AddElapsedGameTimeUseCase(repository),
                 completeGameUseCase = CompleteGameUseCase(repository, router),
                 resetGameUseCase = ResetGameUseCase(repository),

@@ -1,8 +1,6 @@
 package com.alan.queensland.core.ui.base.compose.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,7 +31,9 @@ fun AppAlertDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     dismissButtonText: String? = null,
+    onDismissClick: () -> Unit = onDismissRequest,
     confirmButtonColor: Color = MaterialTheme.colorScheme.primary,
+    dismissButtonColor: Color = MaterialTheme.colorScheme.primary,
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
@@ -67,31 +67,21 @@ fun AppAlertDialog(
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Spacer(modifier = Modifier.height(Paddings.one))
-                if (dismissButtonText == null) {
+                AppButton(
+                    text = confirmButtonText,
+                    onClick = onConfirmClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    color = confirmButtonColor,
+                )
+                dismissButtonText?.let {
+                    Spacer(modifier = Modifier.height(Paddings.half))
                     AppButton(
-                        text = confirmButtonText,
-                        onClick = onConfirmClick,
+                        text = dismissButtonText,
+                        onClick = onDismissClick,
                         modifier = Modifier.fillMaxWidth(),
-                        color = confirmButtonColor,
+                        color = dismissButtonColor,
+                        isOutlined = true,
                     )
-                } else {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(Paddings.half),
-                    ) {
-                        AppButton(
-                            text = dismissButtonText,
-                            onClick = onDismissRequest,
-                            modifier = Modifier.weight(1f),
-                            isOutlined = true,
-                        )
-                        AppButton(
-                            text = confirmButtonText,
-                            onClick = onConfirmClick,
-                            modifier = Modifier.weight(1f),
-                            color = confirmButtonColor,
-                        )
-                    }
                 }
             }
         }

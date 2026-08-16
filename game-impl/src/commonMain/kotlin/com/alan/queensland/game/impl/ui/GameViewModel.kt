@@ -5,6 +5,7 @@ import com.alan.queensland.core.ui.base.lifecycle.BaseViewModel
 import com.alan.queensland.core.ui.base.model.UiState
 import com.alan.queensland.core.utils.flow.CoroutineDispatchers
 import com.alan.queensland.game.api.BoardPosition
+import com.alan.queensland.game.impl.business.AbandonGameUseCase
 import com.alan.queensland.game.impl.business.AddElapsedGameTimeUseCase
 import com.alan.queensland.game.impl.business.CompleteGameUseCase
 import com.alan.queensland.game.impl.business.ObserveActiveGameStateUseCase
@@ -38,6 +39,7 @@ class GameViewModel(
     gameUiStateMapper: GameUiStateMapper,
     validateQueenPlacementUseCase: ValidateQueenPlacementUseCase,
     private val observeActiveGameStateUseCase: ObserveActiveGameStateUseCase,
+    private val abandonGameUseCase: AbandonGameUseCase,
     private val addElapsedGameTimeUseCase: AddElapsedGameTimeUseCase,
     private val completeGameUseCase: CompleteGameUseCase,
     private val resetGameUseCase: ResetGameUseCase,
@@ -115,6 +117,11 @@ class GameViewModel(
         viewModelScope.launch {
             completeGame()
         }
+    }
+
+    fun onAbandonGameClick() {
+        _showCompletionFailureDialogFlow.value = false
+        abandonGameUseCase()
     }
 
     private fun resumeTimer() {

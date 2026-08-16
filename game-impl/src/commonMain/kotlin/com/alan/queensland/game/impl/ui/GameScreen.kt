@@ -45,6 +45,7 @@ import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import com.alan.queensland.core.ui.base.model.UiState
 import org.jetbrains.compose.resources.stringResource
 import queensland.game_impl.generated.resources.Res
+import queensland.game_impl.generated.resources.abandon_game
 import queensland.game_impl.generated.resources.game_not_active
 import queensland.game_impl.generated.resources.game_result_save_error_message
 import queensland.game_impl.generated.resources.game_result_save_error_title
@@ -95,7 +96,10 @@ fun GameScreen(
             title = stringResource(Res.string.game_result_save_error_title),
             message = stringResource(Res.string.game_result_save_error_message),
             confirmButtonText = stringResource(Res.string.game_result_save_retry),
+            dismissButtonText = stringResource(Res.string.abandon_game),
+            dismissButtonColor = MaterialTheme.colorScheme.error,
             onConfirmClick = viewModel::onGameCompletionRetryClick,
+            onDismissClick = viewModel::onAbandonGameClick,
             onDismissRequest = {},
         )
     }
