@@ -17,11 +17,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alan.queensland.core.ui.base.FormFactor
 import com.alan.queensland.core.ui.base.compose.components.AppButton
 import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
@@ -39,6 +41,25 @@ import queensland.game_impl.generated.resources.start_game
 fun GameConfigurationScreen(
     viewModel: GameConfigurationViewModel,
 ) {
+    if (remember { FormFactor.isTablet() }) {
+        GameConfigurationTabletScreen(viewModel)
+    } else {
+        GameConfigurationPhoneScreen(viewModel)
+    }
+}
+
+@Composable
+private fun GameConfigurationTabletScreen(
+    viewModel: GameConfigurationViewModel,
+) {
+    // Tablet-specific layout will replace this functional phone fallback.
+    GameConfigurationPhoneScreen(viewModel)
+}
+
+@Composable
+private fun GameConfigurationPhoneScreen(
+    viewModel: GameConfigurationViewModel,
+) {
     val boardSize by viewModel.boardSize.collectAsStateWithLifecycle()
 
     Scaffold(
@@ -53,7 +74,6 @@ fun GameConfigurationScreen(
             )
         },
     ) { contentPadding ->
-        // NB: landscape requires different layout for proper presentation
         Column(
             modifier = Modifier
                 .fillMaxSize()

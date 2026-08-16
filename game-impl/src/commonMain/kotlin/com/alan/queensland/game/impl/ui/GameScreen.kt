@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alan.queensland.core.ui.base.FormFactor
 import com.alan.queensland.core.ui.base.compose.components.AppAlertDialog
 import com.alan.queensland.core.ui.base.compose.components.AppButton
 import com.alan.queensland.core.ui.base.compose.components.AppQueen
@@ -56,6 +58,25 @@ import queensland.game_impl.generated.resources.reset_game
 
 @Composable
 fun GameScreen(
+    viewModel: GameViewModel,
+) {
+    if (remember { FormFactor.isTablet() }) {
+        GameTabletScreen(viewModel)
+    } else {
+        GamePhoneScreen(viewModel)
+    }
+}
+
+@Composable
+private fun GameTabletScreen(
+    viewModel: GameViewModel,
+) {
+    // Tablet-specific layout will replace this functional phone fallback.
+    GamePhoneScreen(viewModel)
+}
+
+@Composable
+private fun GamePhoneScreen(
     viewModel: GameViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

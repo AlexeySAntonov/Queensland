@@ -15,11 +15,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alan.queensland.core.ui.base.FormFactor
 import com.alan.queensland.core.ui.base.compose.components.AppButton
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import org.jetbrains.compose.resources.painterResource
@@ -32,6 +34,25 @@ import queensland.home_impl.generated.resources.resume_game
 
 @Composable
 fun HomeScreen(
+    viewModel: HomeViewModel,
+) {
+    if (remember { FormFactor.isTablet() }) {
+        HomeTabletScreen(viewModel)
+    } else {
+        HomePhoneScreen(viewModel)
+    }
+}
+
+@Composable
+private fun HomeTabletScreen(
+    viewModel: HomeViewModel,
+) {
+    // Tablet-specific layout will replace this functional phone fallback.
+    HomePhoneScreen(viewModel)
+}
+
+@Composable
+private fun HomePhoneScreen(
     viewModel: HomeViewModel,
 ) {
     val hasActiveGame by viewModel.hasActiveGame.collectAsStateWithLifecycle()
