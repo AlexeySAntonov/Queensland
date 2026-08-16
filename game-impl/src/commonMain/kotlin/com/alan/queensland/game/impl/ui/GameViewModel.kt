@@ -18,14 +18,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
@@ -35,10 +33,10 @@ import kotlin.time.TimeSource
 
 @Inject
 class GameViewModel(
-    observeActiveGameStateUseCase: ObserveActiveGameStateUseCase,
-    validateQueenPlacementUseCase: ValidateQueenPlacementUseCase,
     coroutineDispatchers: CoroutineDispatchers,
     gameUiStateMapper: GameUiStateMapper,
+    validateQueenPlacementUseCase: ValidateQueenPlacementUseCase,
+    private val observeActiveGameStateUseCase: ObserveActiveGameStateUseCase,
     private val addElapsedGameTimeUseCase: AddElapsedGameTimeUseCase,
     private val completeGameUseCase: CompleteGameUseCase,
     private val resetGameUseCase: ResetGameUseCase,
@@ -78,7 +76,7 @@ class GameViewModel(
         )
 
     init {
-        observeGameCompletion()
+        observeGameTermination()
     }
 
     override fun onCleared() {
@@ -131,12 +129,17 @@ class GameViewModel(
         elapsedMillis?.let(addElapsedGameTimeUseCase::invoke)
     }
 
-    private fun observeGameCompletion() {
+    private fun observeGameTermination() {
         viewModelScope.launch {
-            validatedGameState
-                .filter { (_, validation) -> validation.isSolved }
-                .take(1)
-                .first()
+            // early return when, e.g., the game was torn down by process death and we no longer able to restore it
+            if (observeActiveGameStateUseCase().first() == null) {
+                router.back()
+                return@launch
+            }
+
+            validatedGameState.first { (_, validation) ->
+                validation.isSolved
+            }
 
             onGameCompleted()
         }
