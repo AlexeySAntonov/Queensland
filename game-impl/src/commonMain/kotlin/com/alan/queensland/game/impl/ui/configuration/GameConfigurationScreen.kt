@@ -2,9 +2,11 @@ package com.alan.queensland.game.impl.ui.configuration
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,7 +19,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,26 +47,8 @@ import queensland.game_impl.generated.resources.start_game
 fun GameConfigurationScreen(
     viewModel: GameConfigurationViewModel,
 ) {
-    if (remember { FormFactor.isTablet() }) {
-        GameConfigurationTabletScreen(viewModel)
-    } else {
-        GameConfigurationPhoneScreen(viewModel)
-    }
-}
-
-@Composable
-private fun GameConfigurationTabletScreen(
-    viewModel: GameConfigurationViewModel,
-) {
-    // Tablet-specific layout will replace this functional phone fallback.
-    GameConfigurationPhoneScreen(viewModel)
-}
-
-@Composable
-private fun GameConfigurationPhoneScreen(
-    viewModel: GameConfigurationViewModel,
-) {
     val boardSize by viewModel.boardSize.collectAsStateWithLifecycle()
+    val isWideScreen = FormFactor.isWideScreen()
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -79,32 +62,105 @@ private fun GameConfigurationPhoneScreen(
             )
         },
     ) { contentPadding ->
-        Column(
+        val modifier = Modifier
+            .fillMaxSize()
+            .padding(contentPadding)
+            .padding(horizontal = Paddings.two, vertical = Paddings.one)
+
+        if (isWideScreen) {
+            GameConfigurationWideScreen(
+                boardSize = boardSize,
+                onDecreaseBoardSizeClick = viewModel::onDecreaseBoardSizeClick,
+                onIncreaseBoardSizeClick = viewModel::onIncreaseBoardSizeClick,
+                onContinueClick = viewModel::onContinueClick,
+                modifier = modifier,
+            )
+        } else {
+            GameConfigurationPhoneScreen(
+                boardSize = boardSize,
+                onDecreaseBoardSizeClick = viewModel::onDecreaseBoardSizeClick,
+                onIncreaseBoardSizeClick = viewModel::onIncreaseBoardSizeClick,
+                onContinueClick = viewModel::onContinueClick,
+                modifier = modifier,
+            )
+        }
+    }
+}
+
+@Composable
+private fun GameConfigurationWideScreen(
+    boardSize: Int,
+    onDecreaseBoardSizeClick: () -> Unit,
+    onIncreaseBoardSizeClick: () -> Unit,
+    onContinueClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier = modifier) {
+        BoxWithConstraints(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding)
-                .padding(horizontal = Paddings.two, vertical = Paddings.one),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .weight(1f)
+                .fillMaxHeight()
+                .padding(end = Paddings.one),
+            contentAlignment = Alignment.Center,
         ) {
+            val boardDimension = minOf(maxWidth, maxHeight)
             AppChessBoard(
                 boardSize = boardSize,
-                modifier = Modifier
-                    .padding(top = Paddings.one)
-                    .fillMaxWidth(),
+                modifier = Modifier.size(boardDimension),
             )
+        }
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             Spacer(modifier = Modifier.weight(1f))
             BoardSizeSelector(
                 boardSize = boardSize,
-                onDecreaseClick = viewModel::onDecreaseBoardSizeClick,
-                onIncreaseClick = viewModel::onIncreaseBoardSizeClick,
+                onDecreaseClick = onDecreaseBoardSizeClick,
+                onIncreaseClick = onIncreaseBoardSizeClick,
             )
             Spacer(modifier = Modifier.weight(1f))
             AppButton(
                 text = stringResource(Res.string.start_game),
-                onClick = viewModel::onContinueClick,
+                onClick = onContinueClick,
                 modifier = Modifier.fillMaxWidth(),
             )
         }
+    }
+}
+
+@Composable
+private fun GameConfigurationPhoneScreen(
+    boardSize: Int,
+    onDecreaseBoardSizeClick: () -> Unit,
+    onIncreaseBoardSizeClick: () -> Unit,
+    onContinueClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        AppChessBoard(
+            boardSize = boardSize,
+            modifier = Modifier
+                .padding(top = Paddings.one)
+                .fillMaxWidth(),
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        BoardSizeSelector(
+            boardSize = boardSize,
+            onDecreaseClick = onDecreaseBoardSizeClick,
+            onIncreaseClick = onIncreaseBoardSizeClick,
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        AppButton(
+            text = stringResource(Res.string.start_game),
+            onClick = onContinueClick,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 

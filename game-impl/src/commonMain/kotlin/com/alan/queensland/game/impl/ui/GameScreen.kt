@@ -9,8 +9,10 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -61,27 +62,9 @@ import queensland.game_impl.generated.resources.reset_game
 fun GameScreen(
     viewModel: GameViewModel,
 ) {
-    if (remember { FormFactor.isTablet() }) {
-        GameTabletScreen(viewModel)
-    } else {
-        GamePhoneScreen(viewModel)
-    }
-}
-
-@Composable
-private fun GameTabletScreen(
-    viewModel: GameViewModel,
-) {
-    // Tablet-specific layout will replace this functional phone fallback.
-    GamePhoneScreen(viewModel)
-}
-
-@Composable
-private fun GamePhoneScreen(
-    viewModel: GameViewModel,
-) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val showCompletionFailureDialog by viewModel.showCompletionFailureDialogFlow.collectAsStateWithLifecycle()
+    val isWideScreen = FormFactor.isWideScreen()
 
     LifecycleResumeEffect(viewModel) {
         viewModel.onScreenResumed()
@@ -108,6 +91,7 @@ private fun GamePhoneScreen(
             ) {
                 GameUiStateContent(
                     uiState = uiState,
+                    isWideScreen = isWideScreen,
                     onCellClick = viewModel::onCellClick,
                     onResetGameClick = viewModel::onResetGameClick,
                 )
@@ -151,17 +135,28 @@ private fun GameCompletionOverlay() {
 @Composable
 private fun BoxScope.GameUiStateContent(
     uiState: UiState<GameUiState>,
+    isWideScreen: Boolean,
     onCellClick: (row: Int, column: Int) -> Unit,
     onResetGameClick: () -> Unit,
 ) {
     when (uiState) {
         UiState.Loading -> LoadingContent()
         UiState.Error -> ErrorContent()
-        is UiState.Data -> GameContent(
-            state = uiState.value,
-            onCellClick = onCellClick,
-            onResetGameClick = onResetGameClick,
-        )
+        is UiState.Data -> {
+            if (isWideScreen) {
+                GameWideContent(
+                    state = uiState.value,
+                    onCellClick = onCellClick,
+                    onResetGameClick = onResetGameClick,
+                )
+            } else {
+                GamePhoneContent(
+                    state = uiState.value,
+                    onCellClick = onCellClick,
+                    onResetGameClick = onResetGameClick,
+                )
+            }
+        }
     }
 }
 
@@ -180,7 +175,52 @@ private fun BoxScope.ErrorContent() {
 }
 
 @Composable
-private fun GameContent(
+private fun GameWideContent(
+    state: GameUiState,
+    onCellClick: (row: Int, column: Int) -> Unit,
+    onResetGameClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = Paddings.two, vertical = Paddings.one),
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .padding(end = Paddings.one),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            QueenReserve(remainingQueenCount = state.remainingQueenCount)
+            Spacer(modifier = Modifier.weight(1f))
+            GameTimer(formattedTimeSpent = state.formattedTimeSpent)
+            Spacer(modifier = Modifier.weight(1f))
+            AppButton(
+                text = stringResource(Res.string.reset_game),
+                onClick = onResetGameClick,
+                modifier = Modifier.fillMaxWidth(),
+                isOutlined = true,
+            )
+        }
+        BoxWithConstraints(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center,
+        ) {
+            val boardDimension = minOf(maxWidth, maxHeight)
+            GameBoard(
+                state = state,
+                onCellClick = onCellClick,
+                modifier = Modifier.size(boardDimension),
+            )
+        }
+    }
+}
+
+@Composable
+private fun GamePhoneContent(
     state: GameUiState,
     onCellClick: (row: Int, column: Int) -> Unit,
     onResetGameClick: () -> Unit,
@@ -198,6 +238,7 @@ private fun GameContent(
         GameBoard(
             state = state,
             onCellClick = onCellClick,
+            modifier = Modifier.fillMaxWidth(),
         )
         Spacer(modifier = Modifier.weight(1f))
         AppButton(
