@@ -2,6 +2,7 @@ package com.alan.queensland.core.db.impl.data
 
 import com.alan.queensland.core.db.api.GameResultsDatasource
 import com.alan.queensland.core.db.api.model.GameResultModel
+import com.alan.queensland.core.db.api.model.GameResultPieceType
 import com.alan.queensland.core.db.impl.entity.GameResultEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -21,8 +22,9 @@ class GameResultsDatasourceImpl(
 
     override suspend fun saveResult(
         boardSize: Int,
+        pieceType: GameResultPieceType,
         timeSpentMillis: Long,
-        queenPositions: Set<Pair<Int, Int>>,
+        piecePositions: Set<Pair<Int, Int>>,
     ) {
         db.gameResultDao().insert(
             GameResultEntity(
@@ -30,7 +32,8 @@ class GameResultsDatasourceImpl(
                 timeSpentMillis = timeSpentMillis,
                 createdAtMillis = Clock.System.now().toEpochMilliseconds(),
                 boardSize = boardSize,
-                queenPositions = queenPositions.encode(),
+                pieceType = pieceType.name,
+                piecePositions = piecePositions.encode(),
             ),
         )
     }
@@ -44,11 +47,12 @@ class GameResultsDatasourceImpl(
         timeSpentMillis = timeSpentMillis,
         createdAtMillis = createdAtMillis,
         boardSize = boardSize,
-        queenPositions = queenPositions.decode(),
+        pieceType = GameResultPieceType.valueOf(pieceType),
+        piecePositions = piecePositions.decode(),
     )
 
     private fun Set<Pair<Int, Int>>.encode(): String {
-        return joinToString(separator = QUEEN_SEPARATOR.toString()) { position ->
+        return joinToString(separator = PIECE_SEPARATOR.toString()) { position ->
             "${position.first}$COORDINATE_SEPARATOR${position.second}"
         }
     }
@@ -56,14 +60,14 @@ class GameResultsDatasourceImpl(
     private fun String.decode(): Set<Pair<Int, Int>> {
         if (isEmpty()) return emptySet()
 
-        return split(QUEEN_SEPARATOR).mapTo(mutableSetOf()) { position ->
+        return split(PIECE_SEPARATOR).mapTo(mutableSetOf()) { position ->
             val (row, column) = position.split(COORDINATE_SEPARATOR, limit = 2)
             row.toInt() to column.toInt()
         }
     }
 
     private companion object {
-        const val QUEEN_SEPARATOR = ','
+        const val PIECE_SEPARATOR = ','
         const val COORDINATE_SEPARATOR = ':'
     }
 }

@@ -5,6 +5,7 @@ import com.alan.queensland.core.utils.result.resultOf
 import com.alan.queensland.game.api.ActiveGameState
 import com.alan.queensland.game.api.GameBoardSize
 import com.alan.queensland.game.api.GameRepository
+import com.alan.queensland.game.api.PieceType
 import com.alan.queensland.navigation.api.Router
 import me.tatarka.inject.annotations.Inject
 
@@ -16,11 +17,19 @@ class CreateGameUseCase(
 
     private val logger = Logger.withTag("CreateGameUseCase")
 
-    operator fun invoke(boardSize: Int): Result<Unit> =
+    operator fun invoke(
+        boardSize: Int,
+        pieceType: PieceType,
+    ): Result<Unit> =
         resultOf {
             GameBoardSize.requireSupported(boardSize)
             gameRepository.clear()
-            gameRepository.updateActiveGameState { ActiveGameState(boardSize = boardSize) }
+            gameRepository.updateActiveGameState {
+                ActiveGameState(
+                    boardSize = boardSize,
+                    pieceType = pieceType,
+                )
+            }
             router.openGame()
         }.onFailure { throwable ->
             logger.e(throwable) { "Failed to create game" }

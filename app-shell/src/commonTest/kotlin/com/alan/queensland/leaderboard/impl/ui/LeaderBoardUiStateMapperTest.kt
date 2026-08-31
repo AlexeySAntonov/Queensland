@@ -1,6 +1,7 @@
 package com.alan.queensland.leaderboard.impl.ui
 
 import com.alan.queensland.core.db.api.model.GameResultModel
+import com.alan.queensland.core.db.api.model.GameResultPieceType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -38,14 +39,14 @@ class LeaderBoardUiStateMapperTest {
     }
 
     @Test
-    fun mapsQueenPositions() {
-        val queenPositions = setOf(
+    fun mapsPiecePositions() {
+        val piecePositions = setOf(
             0 to 1,
             1 to 3,
         )
 
         val result = mapper(
-            listOf(gameResult(uuid = "result", queenPositions = queenPositions)),
+            listOf(gameResult(uuid = "result", piecePositions = piecePositions)),
         ).groups.single().results.single()
 
         assertEquals(
@@ -53,7 +54,7 @@ class LeaderBoardUiStateMapperTest {
                 0 to 1,
                 1 to 3,
             ),
-            result.queenPositions,
+            result.piecePositions,
         )
     }
 
@@ -74,14 +75,16 @@ class LeaderBoardUiStateMapperTest {
     private fun gameResult(
         uuid: String,
         boardSize: Int = 4,
+        pieceType: GameResultPieceType = GameResultPieceType.KNIGHT,
         timeSpentMillis: Long = 1_000,
         createdAtMillis: Long = 0,
-        queenPositions: Set<Pair<Int, Int>> = emptySet(),
+        piecePositions: Set<Pair<Int, Int>> = emptySet(),
     ) = GameResultModel(
         uuid = uuid,
         boardSize = boardSize,
+        pieceType = pieceType,
         timeSpentMillis = timeSpentMillis,
         createdAtMillis = createdAtMillis,
-        queenPositions = queenPositions,
+        piecePositions = piecePositions,
     )
 }

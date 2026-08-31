@@ -20,13 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import com.alan.queensland.core.ui.base.compose.components.AppQueen
+import com.alan.queensland.core.ui.base.compose.components.AppPiece
 import org.jetbrains.compose.resources.painterResource
 import queensland.game_impl.generated.resources.Res
 import queensland.game_impl.generated.resources.ic_exhaust_v2
 
 @Composable
-internal fun BoxScope.LandingQueen(
+internal fun BoxScope.LandingPiece(
+    pieceLabel: String,
     isPlaced: Boolean,
     clipExhaustToCellBounds: Boolean,
 ) {
@@ -51,7 +52,7 @@ internal fun BoxScope.LandingQueen(
                 landingOffset.animateTo(
                     targetValue = 0f,
                     animationSpec = tween(
-                        durationMillis = QUEEN_LANDING_DURATION_MILLIS,
+                        durationMillis = PIECE_LANDING_DURATION_MILLIS,
                         easing = LinearOutSlowInEasing,
                     ),
                 )
@@ -61,7 +62,7 @@ internal fun BoxScope.LandingQueen(
         }
     }
 
-    // Hide the final-position frame until the effect has moved a newly placed queen above the cell.
+    // Hide the final-position frame until the effect has moved a newly placed piece above the cell.
     if (!isPlaced || isWaitingForLandingStart) return
 
     if (isLanding) {
@@ -88,7 +89,8 @@ internal fun BoxScope.LandingQueen(
         }
     }
 
-    AppQueen(
+    AppPiece(
+        label = pieceLabel,
         modifier = Modifier
             .fillMaxSize()
             .landingTranslation(landingOffset.value),
@@ -100,7 +102,7 @@ private fun Modifier.landingTranslation(offset: Float): Modifier = graphicsLayer
     translationY = offset * size.height
 }
 
-internal const val QUEEN_LANDING_DURATION_MILLIS = 1_000
+internal const val PIECE_LANDING_DURATION_MILLIS = 1_000
 
 private const val LANDING_START_OFFSET = -1.1f
 private const val EXHAUST_WIDTH_FRACTION = 0.72f

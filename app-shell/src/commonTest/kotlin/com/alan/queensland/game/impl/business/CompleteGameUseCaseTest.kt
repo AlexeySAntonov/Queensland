@@ -18,7 +18,7 @@ class CompleteGameUseCaseTest {
     fun savesResultClearsGameAndOpensFinishedScreen() = runTest {
         val gameState = ActiveGameState(
             boardSize = 6,
-            queenPositions = setOf(
+            piecePositions = setOf(
                 BoardPosition(row = 0, column = 1),
                 BoardPosition(row = 1, column = 3),
                 BoardPosition(row = 2, column = 5),

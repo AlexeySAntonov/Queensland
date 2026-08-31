@@ -5,13 +5,14 @@ import com.alan.queensland.core.db.test.FakeGameResultsDatasource
 import com.alan.queensland.core.utils.flow.CoroutineDispatchers
 import com.alan.queensland.game.api.ActiveGameState
 import com.alan.queensland.game.api.BoardPosition
+import com.alan.queensland.game.api.PieceType
 import com.alan.queensland.game.impl.business.AbandonGameUseCase
 import com.alan.queensland.game.impl.business.AddElapsedGameTimeUseCase
 import com.alan.queensland.game.impl.business.CompleteGameUseCase
 import com.alan.queensland.game.impl.business.ObserveActiveGameStateUseCase
 import com.alan.queensland.game.impl.business.ResetGameUseCase
-import com.alan.queensland.game.impl.business.ToggleQueenUseCase
-import com.alan.queensland.game.impl.business.ValidateQueenPlacementUseCase
+import com.alan.queensland.game.impl.business.TogglePieceUseCase
+import com.alan.queensland.game.impl.business.ValidatePiecePlacementUseCase
 import com.alan.queensland.game.impl.data.GameRepositoryImpl
 import com.alan.queensland.navigation.api.NavigationEvent
 import com.alan.queensland.navigation.test.FakeRouter
@@ -53,13 +54,13 @@ class GameViewModelTest {
                     dispatcherDefault = dispatcher,
                 ),
                 gameUiStateMapper = GameUiStateMapper(),
-                validateQueenPlacementUseCase = ValidateQueenPlacementUseCase(),
+                validatePiecePlacementUseCase = ValidatePiecePlacementUseCase(),
                 observeActiveGameStateUseCase = ObserveActiveGameStateUseCase(repository),
                 abandonGameUseCase = AbandonGameUseCase(repository, router),
                 addElapsedGameTimeUseCase = AddElapsedGameTimeUseCase(repository),
                 completeGameUseCase = CompleteGameUseCase(repository, router),
                 resetGameUseCase = ResetGameUseCase(repository),
-                toggleQueenUseCase = ToggleQueenUseCase(repository),
+                togglePieceUseCase = TogglePieceUseCase(repository),
                 router = router,
             )
             viewModel = testedViewModel
@@ -94,7 +95,8 @@ class GameViewModelTest {
 
     private fun solvedGameState() = ActiveGameState(
         boardSize = 4,
-        queenPositions = setOf(
+        pieceType = PieceType.ROOK,
+        piecePositions = setOf(
             BoardPosition(row = 0, column = 1),
             BoardPosition(row = 1, column = 3),
             BoardPosition(row = 2, column = 0),

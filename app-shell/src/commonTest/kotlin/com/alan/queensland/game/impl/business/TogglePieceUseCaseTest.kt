@@ -6,19 +6,19 @@ import com.alan.queensland.game.test.FakeGameRepository
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ToggleQueenUseCaseTest {
+class TogglePieceUseCaseTest {
 
     @Test
-    fun tappingEmptyAndOccupiedCellAddsAndRemovesQueen() {
+    fun tappingEmptyAndOccupiedCellAddsAndRemovesPiece() {
         val repository = FakeGameRepository(ActiveGameState(boardSize = 4))
-        val toggleQueen = ToggleQueenUseCase(repository)
+        val togglePiece = TogglePieceUseCase(repository)
         val position = BoardPosition(row = 1, column = 2)
 
-        toggleQueen(position)
-        assertEquals(setOf(position), repository.currentState?.queenPositions)
+        togglePiece(position)
+        assertEquals(setOf(position), repository.currentState?.piecePositions)
 
-        toggleQueen(position)
-        assertEquals(emptySet(), repository.currentState?.queenPositions)
+        togglePiece(position)
+        assertEquals(emptySet(), repository.currentState?.piecePositions)
     }
 
     @Test
@@ -30,12 +30,12 @@ class ToggleQueenUseCaseTest {
             BoardPosition(row = 0, column = 3),
         )
         val repository = FakeGameRepository(
-            ActiveGameState(boardSize = 4, queenPositions = initialPositions),
+            ActiveGameState(boardSize = 4, piecePositions = initialPositions),
         )
 
-        ToggleQueenUseCase(repository)(BoardPosition(row = 1, column = 0))
+        TogglePieceUseCase(repository)(BoardPosition(row = 1, column = 0))
 
-        assertEquals(initialPositions, repository.currentState?.queenPositions)
+        assertEquals(initialPositions, repository.currentState?.piecePositions)
     }
 
     @Test
@@ -43,7 +43,7 @@ class ToggleQueenUseCaseTest {
         val initialState = ActiveGameState(boardSize = 4)
         val repository = FakeGameRepository(initialState)
 
-        ToggleQueenUseCase(repository)(BoardPosition(row = 4, column = 0))
+        TogglePieceUseCase(repository)(BoardPosition(row = 4, column = 0))
 
         assertEquals(initialState, repository.currentState)
     }

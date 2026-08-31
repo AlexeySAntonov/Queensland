@@ -44,9 +44,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alan.queensland.core.db.api.model.GameResultPieceType
 import com.alan.queensland.core.ui.base.compose.components.AppAlertDialog
 import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
-import com.alan.queensland.core.ui.base.compose.components.AppQueen
+import com.alan.queensland.core.ui.base.compose.components.AppPiece
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import com.alan.queensland.core.ui.base.model.UiState
@@ -67,6 +68,9 @@ import queensland.leaderboard_impl.generated.resources.leaderboard_load_error
 import queensland.leaderboard_impl.generated.resources.leaderboard_solved_in
 import queensland.leaderboard_impl.generated.resources.leaderboard_title
 import queensland.leaderboard_impl.generated.resources.navigation_close
+import queensland.leaderboard_impl.generated.resources.piece_type_bishop_short
+import queensland.leaderboard_impl.generated.resources.piece_type_knight_short
+import queensland.leaderboard_impl.generated.resources.piece_type_rook_short
 
 @Composable
 fun LeaderBoardScreen(
@@ -238,8 +242,9 @@ private fun GameResultRow(
                 darkSquareColor = accentColor.copy(alpha = 0.72f),
                 borderColor = accentColor,
             ) { row, column ->
-                if ((row to column) in result.queenPositions) {
-                    AppQueen(
+                if ((row to column) in result.piecePositions) {
+                    AppPiece(
+                        label = result.pieceType.shortLabel(),
                         modifier = Modifier.matchParentSize(),
                     )
                 }
@@ -294,6 +299,13 @@ private fun GameResultRow(
             }
         }
     }
+}
+
+@Composable
+private fun GameResultPieceType.shortLabel(): String = when (this) {
+    GameResultPieceType.KNIGHT -> stringResource(Res.string.piece_type_knight_short)
+    GameResultPieceType.BISHOP -> stringResource(Res.string.piece_type_bishop_short)
+    GameResultPieceType.ROOK -> stringResource(Res.string.piece_type_rook_short)
 }
 
 @Composable

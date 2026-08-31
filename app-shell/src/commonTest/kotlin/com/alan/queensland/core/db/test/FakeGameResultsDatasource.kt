@@ -2,6 +2,7 @@ package com.alan.queensland.core.db.test
 
 import com.alan.queensland.core.db.api.GameResultsDatasource
 import com.alan.queensland.core.db.api.model.GameResultModel
+import com.alan.queensland.core.db.api.model.GameResultPieceType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -20,14 +21,16 @@ internal class FakeGameResultsDatasource(
 
     override suspend fun saveResult(
         boardSize: Int,
+        pieceType: GameResultPieceType,
         timeSpentMillis: Long,
-        queenPositions: Set<Pair<Int, Int>>,
+        piecePositions: Set<Pair<Int, Int>>,
     ) {
         saveResultFailure?.let { throwable -> throw throwable }
         savedResults += SavedGameResult(
             boardSize = boardSize,
+            pieceType = pieceType,
             timeSpentMillis = timeSpentMillis,
-            queenPositions = queenPositions,
+            piecePositions = piecePositions,
         )
     }
 

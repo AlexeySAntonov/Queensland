@@ -17,11 +17,11 @@ import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
 import com.alan.queensland.game.api.BoardPosition
 import org.jetbrains.compose.resources.stringResource
 import queensland.game_impl.generated.resources.Res
-import queensland.game_impl.generated.resources.game_board_cell_conflicting_queen
+import queensland.game_impl.generated.resources.game_board_cell_conflicting_piece
 import queensland.game_impl.generated.resources.game_board_cell_empty
-import queensland.game_impl.generated.resources.game_board_cell_queen
-import queensland.game_impl.generated.resources.place_queen
-import queensland.game_impl.generated.resources.remove_queen
+import queensland.game_impl.generated.resources.game_board_cell_piece
+import queensland.game_impl.generated.resources.place_piece
+import queensland.game_impl.generated.resources.remove_piece
 import kotlin.math.sqrt
 
 @Composable
@@ -30,6 +30,9 @@ internal fun GameBoard(
     onCellClick: (row: Int, column: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val pieceName = state.pieceType.label()
+    val pieceLabel = state.pieceType.shortLabel()
+
     Box(
         modifier = modifier.aspectRatio(1f),
     ) {
@@ -42,22 +45,26 @@ internal fun GameBoard(
                 gameCellContentDescription(
                     position = BoardPosition(row = row, column = column),
                     state = state,
+                    pieceName = pieceName,
                 )
             },
             cellClickLabel = { row, column ->
                 val position = BoardPosition(row = row, column = column)
+                val actionResource = if (position in state.piecePositions) {
+                    Res.string.remove_piece
+                } else {
+                    Res.string.place_piece
+                }
                 stringResource(
-                    if (position in state.queenPositions) {
-                        Res.string.remove_queen
-                    } else {
-                        Res.string.place_queen
-                    },
+                    actionResource,
+                    pieceName,
                 )
             },
         ) { row, column ->
-            QueenCell(
+            PieceCell(
                 position = BoardPosition(row = row, column = column),
                 state = state,
+                pieceLabel = pieceLabel,
             )
         }
         ConflictArrows(
@@ -71,13 +78,26 @@ internal fun GameBoard(
 private fun gameCellContentDescription(
     position: BoardPosition,
     state: GameUiState,
+    pieceName: String,
 ): String {
     val descriptionResource = when (position) {
-        in state.conflictingPositions -> Res.string.game_board_cell_conflicting_queen
-        in state.queenPositions -> Res.string.game_board_cell_queen
-        else -> Res.string.game_board_cell_empty
+        in state.conflictingPositions -> Res.string.game_board_cell_conflicting_piece
+        else -> Res.string.game_board_cell_piece
     }
-    return stringResource(descriptionResource, position.row + 1, position.column + 1)
+    return if (position in state.piecePositions) {
+        stringResource(
+            descriptionResource,
+            position.row + 1,
+            position.column + 1,
+            pieceName,
+        )
+    } else {
+        stringResource(
+            Res.string.game_board_cell_empty,
+            position.row + 1,
+            position.column + 1,
+        )
+    }
 }
 
 @Composable
@@ -86,10 +106,10 @@ private fun BoxScope.ConflictArrows(
     conflictingPairs: Set<Pair<BoardPosition, BoardPosition>>,
 ) {
     Canvas(modifier = Modifier.matchParentSize()) {
-        conflictingPairs.forEach { (firstQueen, secondQueen) ->
+        conflictingPairs.forEach { (firstPiece, secondPiece) ->
             drawConflictArrow(
-                firstQueen = firstQueen,
-                secondQueen = secondQueen,
+                firstPiece = firstPiece,
+                secondPiece = secondPiece,
                 boardSize = boardSize,
             )
         }
@@ -97,13 +117,13 @@ private fun BoxScope.ConflictArrows(
 }
 
 private fun DrawScope.drawConflictArrow(
-    firstQueen: BoardPosition,
-    secondQueen: BoardPosition,
+    firstPiece: BoardPosition,
+    secondPiece: BoardPosition,
     boardSize: Int,
 ) {
     val cellSize = size.minDimension / boardSize
-    val firstCenter = firstQueen.centerOffset(cellSize)
-    val secondCenter = secondQueen.centerOffset(cellSize)
+    val firstCenter = firstPiece.centerOffset(cellSize)
+    val secondCenter = secondPiece.centerOffset(cellSize)
     val deltaX = secondCenter.x - firstCenter.x
     val deltaY = secondCenter.y - firstCenter.y
     val distance = sqrt(deltaX * deltaX + deltaY * deltaY)
@@ -190,11 +210,12 @@ private fun BoardPosition.centerOffset(cellSize: Float) = Offset(
 )
 
 @Composable
-private fun BoxScope.QueenCell(
+private fun BoxScope.PieceCell(
     position: BoardPosition,
     state: GameUiState,
+    pieceLabel: String,
 ) {
-    val isPlaced = position in state.queenPositions
+    val isPlaced = position in state.piecePositions
 
     if (isPlaced && position in state.conflictingPositions) {
         Box(
@@ -203,7 +224,8 @@ private fun BoxScope.QueenCell(
                 .background(ConflictColor.copy(alpha = CONFLICT_CELL_ALPHA)),
         )
     }
-    LandingQueen(
+    LandingPiece(
+        pieceLabel = pieceLabel,
         isPlaced = isPlaced,
         clipExhaustToCellBounds = position.row == state.boardSize - 1,
     )

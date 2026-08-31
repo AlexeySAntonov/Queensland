@@ -2,6 +2,7 @@ package com.alan.queensland.game.impl.ui.configuration
 
 import com.alan.queensland.core.ui.base.lifecycle.BaseViewModel
 import com.alan.queensland.game.api.GameBoardSize
+import com.alan.queensland.game.api.PieceType
 import com.alan.queensland.game.impl.business.CreateGameUseCase
 import com.alan.queensland.navigation.api.Router
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,23 +17,35 @@ class GameConfigurationViewModel(
     private val router: Router,
 ) : BaseViewModel() {
 
-    private val _boardSize = MutableStateFlow(GameBoardSize.DEFAULT)
-    val boardSize: StateFlow<Int> = _boardSize.asStateFlow()
+    private val _uiState = MutableStateFlow(GameConfigurationUiState())
+    val uiState: StateFlow<GameConfigurationUiState> = _uiState.asStateFlow()
 
     fun onDecreaseBoardSizeClick() {
-        _boardSize.update { current ->
-            (current - 1).coerceAtLeast(GameBoardSize.MIN)
+        _uiState.update { current ->
+            current.copy(
+                boardSize = (current.boardSize - 1).coerceAtLeast(GameBoardSize.MIN),
+            )
         }
     }
 
     fun onIncreaseBoardSizeClick() {
-        _boardSize.update { current ->
-            (current + 1).coerceAtMost(GameBoardSize.MAX)
+        _uiState.update { current ->
+            current.copy(
+                boardSize = (current.boardSize + 1).coerceAtMost(GameBoardSize.MAX),
+            )
         }
     }
 
+    fun onPieceTypeClick(pieceType: PieceType) {
+        _uiState.update { current -> current.copy(selectedPieceType = pieceType) }
+    }
+
     fun onContinueClick() {
-        createGameUseCase(_boardSize.value)
+        val state = _uiState.value
+        createGameUseCase(
+            boardSize = state.boardSize,
+            pieceType = state.selectedPieceType,
+        )
     }
 
     fun onBackClick() {

@@ -5,7 +5,7 @@ import com.alan.queensland.game.api.GameRepository
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class ToggleQueenUseCase(
+class TogglePieceUseCase(
     private val gameRepository: GameRepository,
 ) {
     operator fun invoke(position: BoardPosition) {
@@ -16,8 +16,8 @@ class ToggleQueenUseCase(
                 }
 
                 when {
-                    position in queenPositions -> copy(queenPositions = queenPositions - position)
-                    queenPositions.size < boardSize -> copy(queenPositions = queenPositions + position)
+                    position in piecePositions -> copy(piecePositions = piecePositions - position)
+                    piecePositions.size < boardSize -> copy(piecePositions = piecePositions + position)
                     else -> this
                 }
             }

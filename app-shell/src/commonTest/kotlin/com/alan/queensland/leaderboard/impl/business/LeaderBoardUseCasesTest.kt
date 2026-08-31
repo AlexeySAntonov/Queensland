@@ -1,6 +1,7 @@
 package com.alan.queensland.leaderboard.impl.business
 
 import com.alan.queensland.core.db.api.model.GameResultModel
+import com.alan.queensland.core.db.api.model.GameResultPieceType
 import com.alan.queensland.core.db.test.FakeGameResultsDatasource
 import com.alan.queensland.leaderboard.impl.data.LeaderBoardRepository
 import kotlinx.coroutines.flow.first
@@ -18,7 +19,8 @@ class LeaderBoardUseCasesTest {
             timeSpentMillis = 2_000L,
             createdAtMillis = 3_000L,
             boardSize = 4,
-            queenPositions = emptySet(),
+            pieceType = GameResultPieceType.KNIGHT,
+            piecePositions = emptySet(),
         )
         val datasource = FakeGameResultsDatasource(initialResults = listOf(result))
         val repository = LeaderBoardRepository(datasource)

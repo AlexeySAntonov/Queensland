@@ -7,6 +7,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -43,7 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alan.queensland.core.ui.base.FormFactor
 import com.alan.queensland.core.ui.base.compose.components.AppAlertDialog
 import com.alan.queensland.core.ui.base.compose.components.AppButton
-import com.alan.queensland.core.ui.base.compose.components.AppQueen
+import com.alan.queensland.core.ui.base.compose.components.AppPiece
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import com.alan.queensland.core.ui.base.model.UiState
@@ -192,7 +193,11 @@ private fun GameWideContent(
                 .padding(end = Paddings.one),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            QueenReserve(remainingQueenCount = state.remainingQueenCount)
+            PieceReserve(
+                boardSize = state.boardSize,
+                pieceLabel = state.pieceType.shortLabel(),
+                remainingPieceCount = state.remainingPieceCount,
+            )
             Spacer(modifier = Modifier.weight(1f))
             GameTimer(formattedTimeSpent = state.formattedTimeSpent)
             Spacer(modifier = Modifier.weight(1f))
@@ -234,7 +239,11 @@ private fun GamePhoneContent(
         Spacer(modifier = Modifier.weight(1f))
         GameTimer(formattedTimeSpent = state.formattedTimeSpent)
         Spacer(modifier = Modifier.weight(1f))
-        QueenReserve(remainingQueenCount = state.remainingQueenCount)
+        PieceReserve(
+            boardSize = state.boardSize,
+            pieceLabel = state.pieceType.shortLabel(),
+            remainingPieceCount = state.remainingPieceCount,
+        )
         GameBoard(
             state = state,
             onCellClick = onCellClick,
@@ -313,20 +322,30 @@ private fun AnimatedTimerDigit(
 }
 
 @Composable
-private fun ColumnScope.QueenReserve(
-    remainingQueenCount: Int,
+private fun ColumnScope.PieceReserve(
+    boardSize: Int,
+    pieceLabel: String,
+    remainingPieceCount: Int,
 ) {
-    Row(
+    BoxWithConstraints(
         modifier = Modifier
-            .height(40.dp)
+            .fillMaxWidth()
             .align(Alignment.End),
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-        verticalAlignment = Alignment.CenterVertically,
     ) {
-        repeat(remainingQueenCount) {
-            AppQueen(
-                modifier = Modifier.size(width = 20.dp, height = 28.dp),
-            )
+        val pieceWidth = maxWidth / boardSize
+        Row(
+            modifier = Modifier.align(Alignment.CenterEnd),
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            repeat(remainingPieceCount) {
+                AppPiece(
+                    label = pieceLabel,
+                    modifier = Modifier
+                        .width(pieceWidth)
+                        .aspectRatio(1f),
+                )
+            }
         }
     }
 }

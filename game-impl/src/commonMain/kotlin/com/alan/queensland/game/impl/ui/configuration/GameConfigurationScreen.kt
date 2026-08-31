@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alan.queensland.core.ui.base.FormFactor
@@ -32,6 +36,8 @@ import com.alan.queensland.core.ui.base.compose.components.AppChessBoard
 import com.alan.queensland.core.ui.base.compose.components.AppToolbar
 import com.alan.queensland.core.ui.base.compose.themes.Paddings
 import com.alan.queensland.game.api.GameBoardSize
+import com.alan.queensland.game.api.PieceType
+import com.alan.queensland.game.impl.ui.label
 import org.jetbrains.compose.resources.stringResource
 import queensland.game_impl.generated.resources.Res
 import queensland.game_impl.generated.resources.board_size_decrease
@@ -47,7 +53,7 @@ import queensland.game_impl.generated.resources.start_game
 fun GameConfigurationScreen(
     viewModel: GameConfigurationViewModel,
 ) {
-    val boardSize by viewModel.boardSize.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isWideScreen = FormFactor.isWideScreen()
 
     Scaffold(
@@ -69,17 +75,19 @@ fun GameConfigurationScreen(
 
         if (isWideScreen) {
             GameConfigurationWideScreen(
-                boardSize = boardSize,
+                state = uiState,
                 onDecreaseBoardSizeClick = viewModel::onDecreaseBoardSizeClick,
                 onIncreaseBoardSizeClick = viewModel::onIncreaseBoardSizeClick,
+                onPieceTypeClick = viewModel::onPieceTypeClick,
                 onContinueClick = viewModel::onContinueClick,
                 modifier = modifier,
             )
         } else {
             GameConfigurationPhoneScreen(
-                boardSize = boardSize,
+                state = uiState,
                 onDecreaseBoardSizeClick = viewModel::onDecreaseBoardSizeClick,
                 onIncreaseBoardSizeClick = viewModel::onIncreaseBoardSizeClick,
+                onPieceTypeClick = viewModel::onPieceTypeClick,
                 onContinueClick = viewModel::onContinueClick,
                 modifier = modifier,
             )
@@ -89,9 +97,10 @@ fun GameConfigurationScreen(
 
 @Composable
 private fun GameConfigurationWideScreen(
-    boardSize: Int,
+    state: GameConfigurationUiState,
     onDecreaseBoardSizeClick: () -> Unit,
     onIncreaseBoardSizeClick: () -> Unit,
+    onPieceTypeClick: (PieceType) -> Unit,
     onContinueClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -105,7 +114,7 @@ private fun GameConfigurationWideScreen(
         ) {
             val boardDimension = minOf(maxWidth, maxHeight)
             AppChessBoard(
-                boardSize = boardSize,
+                boardSize = state.boardSize,
                 modifier = Modifier.size(boardDimension),
             )
         }
@@ -115,17 +124,12 @@ private fun GameConfigurationWideScreen(
                 .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-            BoardSizeSelector(
-                boardSize = boardSize,
-                onDecreaseClick = onDecreaseBoardSizeClick,
-                onIncreaseClick = onIncreaseBoardSizeClick,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            AppButton(
-                text = stringResource(Res.string.start_game),
-                onClick = onContinueClick,
-                modifier = Modifier.fillMaxWidth(),
+            GameConfigurationControls(
+                state = state,
+                onDecreaseBoardSizeClick = onDecreaseBoardSizeClick,
+                onIncreaseBoardSizeClick = onIncreaseBoardSizeClick,
+                onPieceTypeClick = onPieceTypeClick,
+                onContinueClick = onContinueClick,
             )
         }
     }
@@ -133,9 +137,10 @@ private fun GameConfigurationWideScreen(
 
 @Composable
 private fun GameConfigurationPhoneScreen(
-    boardSize: Int,
+    state: GameConfigurationUiState,
     onDecreaseBoardSizeClick: () -> Unit,
     onIncreaseBoardSizeClick: () -> Unit,
+    onPieceTypeClick: (PieceType) -> Unit,
     onContinueClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -144,24 +149,46 @@ private fun GameConfigurationPhoneScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AppChessBoard(
-            boardSize = boardSize,
+            boardSize = state.boardSize,
             modifier = Modifier
                 .padding(top = Paddings.one)
                 .fillMaxWidth(),
         )
-        Spacer(modifier = Modifier.weight(1f))
-        BoardSizeSelector(
-            boardSize = boardSize,
-            onDecreaseClick = onDecreaseBoardSizeClick,
-            onIncreaseClick = onIncreaseBoardSizeClick,
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        AppButton(
-            text = stringResource(Res.string.start_game),
-            onClick = onContinueClick,
-            modifier = Modifier.fillMaxWidth(),
+        GameConfigurationControls(
+            state = state,
+            onDecreaseBoardSizeClick = onDecreaseBoardSizeClick,
+            onIncreaseBoardSizeClick = onIncreaseBoardSizeClick,
+            onPieceTypeClick = onPieceTypeClick,
+            onContinueClick = onContinueClick,
         )
     }
+}
+
+@Composable
+private fun ColumnScope.GameConfigurationControls(
+    state: GameConfigurationUiState,
+    onDecreaseBoardSizeClick: () -> Unit,
+    onIncreaseBoardSizeClick: () -> Unit,
+    onPieceTypeClick: (PieceType) -> Unit,
+    onContinueClick: () -> Unit,
+) {
+    Spacer(modifier = Modifier.weight(1f))
+    BoardSizeSelector(
+        boardSize = state.boardSize,
+        onDecreaseClick = onDecreaseBoardSizeClick,
+        onIncreaseClick = onIncreaseBoardSizeClick,
+    )
+    Spacer(modifier = Modifier.weight(1f))
+    PieceTypeSelector(
+        selectedPieceType = state.selectedPieceType,
+        onPieceTypeClick = onPieceTypeClick,
+    )
+    Spacer(modifier = Modifier.weight(1f))
+    AppButton(
+        text = stringResource(Res.string.start_game),
+        onClick = onContinueClick,
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
 
 @Composable
@@ -215,6 +242,31 @@ private fun BoardSizeSelector(
                     contentDescription = increaseBoardSizeDescription
                 },
                 style = MaterialTheme.typography.headlineMedium,
+            )
+        }
+    }
+}
+
+@Composable
+private fun PieceTypeSelector(
+    selectedPieceType: PieceType,
+    onPieceTypeClick: (PieceType) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .selectableGroup(),
+        horizontalArrangement = Arrangement.spacedBy(Paddings.half),
+    ) {
+        PieceType.entries.forEach { pieceType ->
+            val isSelected = pieceType == selectedPieceType
+            AppButton(
+                text = pieceType.label(),
+                onClick = { onPieceTypeClick(pieceType) },
+                modifier = Modifier
+                    .weight(1f)
+                    .semantics { selected = isSelected },
+                isOutlined = !isSelected,
             )
         }
     }

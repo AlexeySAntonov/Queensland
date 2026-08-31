@@ -2,8 +2,10 @@ package com.alan.queensland.game.impl.data
 
 import com.alan.queensland.core.db.test.FakeGameResultsDatasource
 import com.alan.queensland.core.db.test.SavedGameResult
+import com.alan.queensland.core.db.api.model.GameResultPieceType
 import com.alan.queensland.game.api.ActiveGameState
 import com.alan.queensland.game.api.BoardPosition
+import com.alan.queensland.game.api.PieceType
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -21,7 +23,8 @@ class GameRepositoryImplTest {
         val repository = GameRepositoryImpl(datasource)
         val activeGame = ActiveGameState(
             boardSize = 4,
-            queenPositions = setOf(
+            pieceType = PieceType.ROOK,
+            piecePositions = setOf(
                 BoardPosition(row = 0, column = 1),
                 BoardPosition(row = 1, column = 3),
                 BoardPosition(row = 2, column = 0),
@@ -37,8 +40,9 @@ class GameRepositoryImplTest {
             listOf(
                 SavedGameResult(
                     boardSize = 4,
+                    pieceType = GameResultPieceType.ROOK,
                     timeSpentMillis = 98_765L,
-                    queenPositions = setOf(
+                    piecePositions = setOf(
                         0 to 1,
                         1 to 3,
                         2 to 0,
@@ -70,7 +74,7 @@ class GameRepositoryImplTest {
         val repository = GameRepositoryImpl(datasource)
         val activeGame = ActiveGameState(
             boardSize = 4,
-            queenPositions = setOf(
+            piecePositions = setOf(
                 BoardPosition(row = 0, column = 1),
                 BoardPosition(row = 1, column = 3),
                 BoardPosition(row = 2, column = 0),

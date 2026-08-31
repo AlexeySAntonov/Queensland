@@ -6,6 +6,9 @@
     <string name="leaderboard_board_size">%1$d x %2$d board</string>
     <string name="leaderboard_solved_in">Solved in %1$s</string>
     <string name="leaderboard_completed_at">Completed %1$s</string>
+    <string name="piece_type_knight_short">N</string>
+    <string name="piece_type_bishop_short">B</string>
+    <string name="piece_type_rook_short">R</string>
     <string name="delete_result">Delete result</string>
     <string name="delete_result_confirmation_title">Delete result?</string>
     <string name="delete_result_confirmation_message">This result will be permanently removed.</string>

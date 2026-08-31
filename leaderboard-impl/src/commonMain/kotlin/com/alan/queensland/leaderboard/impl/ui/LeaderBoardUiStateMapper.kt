@@ -29,7 +29,8 @@ class LeaderBoardUiStateMapper {
                                     includeMilliseconds = true,
                                 ),
                                 formattedCompletedAt = formatFullLocalDateTime(result.createdAtMillis),
-                                queenPositions = result.queenPositions,
+                                pieceType = result.pieceType,
+                                piecePositions = result.piecePositions,
                             )
                         },
                 )

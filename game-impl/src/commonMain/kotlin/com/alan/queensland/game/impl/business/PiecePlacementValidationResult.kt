@@ -2,7 +2,7 @@ package com.alan.queensland.game.impl.business
 
 import com.alan.queensland.game.api.BoardPosition
 
-data class QueenPlacementValidationResult(
+data class PiecePlacementValidationResult(
     val conflictingPositions: Set<BoardPosition>,
     val conflictingPairs: Set<Pair<BoardPosition, BoardPosition>>,
     val isSolved: Boolean,

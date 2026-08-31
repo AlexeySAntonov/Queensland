@@ -3,6 +3,7 @@ package com.alan.queensland.game.impl.business
 import com.alan.queensland.game.api.ActiveGameState
 import com.alan.queensland.game.api.BoardPosition
 import com.alan.queensland.game.api.GameBoardSize
+import com.alan.queensland.game.api.PieceType
 import com.alan.queensland.game.api.StartNewGameUseCase
 import com.alan.queensland.game.test.FakeGameRepository
 import com.alan.queensland.navigation.api.NavigationEvent
@@ -18,7 +19,7 @@ class CreateGameUseCaseTest {
     fun openingGameConfigurationPreservesActiveGame() {
         val activeGame = ActiveGameState(
             boardSize = 4,
-            queenPositions = setOf(BoardPosition(row = 1, column = 2)),
+            piecePositions = setOf(BoardPosition(row = 1, column = 2)),
             timeSpentMillis = 1_000L,
         )
         val repository = FakeGameRepository(initialState = activeGame)
@@ -39,17 +40,26 @@ class CreateGameUseCaseTest {
         val repository = FakeGameRepository(
             initialState = ActiveGameState(
                 boardSize = 4,
-                queenPositions = setOf(BoardPosition(row = 1, column = 2)),
+                piecePositions = setOf(BoardPosition(row = 1, column = 2)),
                 timeSpentMillis = 1_000L,
             ),
         )
         val router = FakeRouter()
 
-        val result = CreateGameUseCase(repository, router)(boardSize = 8)
+        val result = CreateGameUseCase(repository, router)(
+            boardSize = 8,
+            pieceType = PieceType.BISHOP,
+        )
 
         assertTrue(result.isSuccess)
         assertEquals(1, repository.clearInvocationCount)
-        assertEquals(ActiveGameState(boardSize = 8), repository.currentState)
+        assertEquals(
+            ActiveGameState(
+                boardSize = 8,
+                pieceType = PieceType.BISHOP,
+            ),
+            repository.currentState,
+        )
         assertEquals(listOf<NavigationEvent>(NavigationEvent.OpenGame), router.sentEvents)
     }
 
@@ -60,7 +70,10 @@ class CreateGameUseCaseTest {
             val repository = FakeGameRepository(initialState = activeGame)
             val router = FakeRouter()
 
-            val result = CreateGameUseCase(repository, router)(boardSize)
+            val result = CreateGameUseCase(repository, router)(
+                boardSize = boardSize,
+                pieceType = PieceType.ROOK,
+            )
 
             assertIs<IllegalArgumentException>(result.exceptionOrNull())
             assertEquals(activeGame, repository.currentState)

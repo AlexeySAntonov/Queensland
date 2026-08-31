@@ -10,8 +10,8 @@ import com.alan.queensland.game.impl.business.AddElapsedGameTimeUseCase
 import com.alan.queensland.game.impl.business.CompleteGameUseCase
 import com.alan.queensland.game.impl.business.ObserveActiveGameStateUseCase
 import com.alan.queensland.game.impl.business.ResetGameUseCase
-import com.alan.queensland.game.impl.business.ToggleQueenUseCase
-import com.alan.queensland.game.impl.business.ValidateQueenPlacementUseCase
+import com.alan.queensland.game.impl.business.TogglePieceUseCase
+import com.alan.queensland.game.impl.business.ValidatePiecePlacementUseCase
 import com.alan.queensland.navigation.api.Router
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -37,13 +37,13 @@ import kotlin.time.TimeSource
 class GameViewModel(
     coroutineDispatchers: CoroutineDispatchers,
     gameUiStateMapper: GameUiStateMapper,
-    validateQueenPlacementUseCase: ValidateQueenPlacementUseCase,
+    validatePiecePlacementUseCase: ValidatePiecePlacementUseCase,
     private val observeActiveGameStateUseCase: ObserveActiveGameStateUseCase,
     private val abandonGameUseCase: AbandonGameUseCase,
     private val addElapsedGameTimeUseCase: AddElapsedGameTimeUseCase,
     private val completeGameUseCase: CompleteGameUseCase,
     private val resetGameUseCase: ResetGameUseCase,
-    private val toggleQueenUseCase: ToggleQueenUseCase,
+    private val togglePieceUseCase: TogglePieceUseCase,
     private val router: Router,
 ) : BaseViewModel() {
 
@@ -56,7 +56,7 @@ class GameViewModel(
 
     private val validatedGameState = observeActiveGameStateUseCase()
         .filterNotNull()
-        .map { state -> state to validateQueenPlacementUseCase(state) }
+        .map { state -> state to validatePiecePlacementUseCase(state) }
         .flowOn(coroutineDispatchers.Processor)
         .shareIn(
             scope = viewModelScope,
@@ -103,7 +103,7 @@ class GameViewModel(
     }
 
     fun onCellClick(row: Int, column: Int) {
-        toggleQueenUseCase(BoardPosition(row = row, column = column))
+        togglePieceUseCase(BoardPosition(row = row, column = column))
     }
 
     fun onResetGameClick() {
@@ -159,11 +159,11 @@ class GameViewModel(
                 validation.isSolved
             }
 
-            // to exclude QUEEN_LANDING_DURATION_MILLIS from result time spent
+            // to exclude PIECE_LANDING_DURATION_MILLIS from result time spent
             stopTimer()
 
-            // wait until the last queen completes its landing
-            delay(QUEEN_LANDING_DURATION_MILLIS.milliseconds)
+            // Wait until the last piece completes its landing.
+            delay(PIECE_LANDING_DURATION_MILLIS.milliseconds)
             completeGame()
         }
     }

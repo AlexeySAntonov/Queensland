@@ -10,7 +10,7 @@ class ResetGameUseCase(
     operator fun invoke() {
         gameRepository.updateActiveGameState {
             this?.copy(
-                queenPositions = emptySet(),
+                piecePositions = emptySet(),
                 timeSpentMillis = 0L,
             )
         }
