@@ -35,6 +35,6 @@ class GameConfigurationViewModelTest {
             ),
             repository.currentState,
         )
-        assertEquals(listOf(NavigationEvent.OpenGame), router.sentEvents)
+        assertEquals(listOf<NavigationEvent>(NavigationEvent.OpenGame), router.sentEvents)
     }
 }
